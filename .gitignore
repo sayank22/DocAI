@@ -1,0 +1,40 @@
+# Ignore node_modules in both client and server
+client/node_modules/
+server/node_modules/
+
+# Ignore .env files in both client and server
+client/.env
+server/.env
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+client/build/
+server/build/
+dist/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/
+
+# Clerk cache (if used)
+.clerk/
+
+# Environment variants
+.env
+.env.*.local
+client/.env.*
+server/.env.*
+
+# Optional backup/temp
+*.bak
+*.tmp
