@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import type { RootState } from "../redux/store";
 import { updateField } from "../redux/interactionSlice";
 
 const InteractionForm = () => {
@@ -7,7 +7,7 @@ const InteractionForm = () => {
   const data = useSelector((state: RootState) => state.interaction);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    dispatch(updateField({ field: e.target.name, value: e.target.value }));
+    dispatch(updateField({ field: e.target.name as keyof typeof data, value: e.target.value }));
   };
 
   return (
