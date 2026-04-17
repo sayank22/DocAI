@@ -1,24 +1,18 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setAllFields } from "../redux/interactionSlice";
+import { extractInteraction } from "../services/api";
 
 const ChatInterface = () => {
   const [input, setInput] = useState("");
   const dispatch = useDispatch();
 
-  const handleSend = () => {
-    // 🔥 MOCK AI RESPONSE (replace later with API)
-    const mockAIResponse = {
-      hcpName: "Dr. Sharma",
-      interactionType: "Meeting",
-      topics: "Discussed Product X",
-      sentiment: "Positive",
-      followUp: "Send brochure",
-    };
+  const handleSend = async () => {
+  const response = await extractInteraction(input);
 
-    dispatch(setAllFields(mockAIResponse));
-    setInput("");
-  };
+  dispatch(setAllFields(response));
+  setInput("");
+};
 
   return (
     <div style={{ width: "50%", padding: "20px" }}>

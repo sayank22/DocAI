@@ -1,0 +1,54 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+/Lib/
+/Include/
+/Scripts/
+/pyvenv.cfg
+
+# Python cache and tooling
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.coverage
+.coverage.*
+htmlcov/
+
+# Build and package output
+build/
+dist/
+*.egg-info/
+*.egg
+
+# FastAPI/Uvicorn and app logs
+*.log
+logs/
+
+# Local databases and runtime files
+*.db
+*.sqlite
+*.sqlite3
+*.pid
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Temporary files
+*.bak
+*.swp
+*.tmp
+*.temp
