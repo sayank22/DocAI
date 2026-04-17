@@ -1,22 +1,24 @@
 from typing import Dict
 
 def log_interaction_tool(data: Dict):
-    return {
-        "tool": "log_interaction",
-        "data": data
-    }
+    return {"tool": "log_interaction", "data": data}
 
 def edit_interaction_tool(data: Dict):
-    return {
-        "tool": "edit_interaction",
-        "data": data
-    }
+    return {"tool": "edit_interaction", "data": data}
 
 def summarize_tool(text: str):
-    return {"summary": text[:100]}
+    return {"tool": "summarize", "summary": text[:100]}
 
 def sentiment_tool(text: str):
-    return {"sentiment": "Positive"}  # can improve later
+    return {"tool": "sentiment", "sentiment": "Positive"}
 
 def followup_tool(text: str):
-    return {"followUp": "Schedule follow-up meeting"}
+    return {"tool": "followup", "followUp": "Schedule follow-up meeting"}
+
+TOOLS = {
+    "log_interaction": log_interaction_tool,
+    "edit_interaction": edit_interaction_tool,
+    "summarize": summarize_tool,
+    "sentiment": sentiment_tool,
+    "followup": followup_tool,
+}

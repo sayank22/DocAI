@@ -8,10 +8,29 @@ const ChatInterface = () => {
   const dispatch = useDispatch();
 
   const handleSend = async () => {
-  const response = await extractInteraction(input);
+  try {
+    const response = await extractInteraction(input);
 
-  dispatch(setAllFields(response));
-  setInput("");
+    console.log("AI Response:", response);
+
+    if (
+      response.tool === "log_interaction" ||
+      response.tool === "edit_interaction"
+    ) {
+      // ✅ Fill form
+      dispatch(setAllFields(response.data));
+    } else if (response.tool === "summarize") {
+      alert("Summary:\n" + response.summary);
+    } else if (response.tool === "sentiment") {
+      alert("Sentiment: " + response.sentiment);
+    } else if (response.tool === "followup") {
+      alert("Follow-up: " + response.followUp);
+    }
+
+    setInput("");
+  } catch (err) {
+    console.error(err);
+  }
 };
 
   return (

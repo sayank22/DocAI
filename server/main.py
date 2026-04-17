@@ -12,8 +12,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def root():
+    return {"message": "working"}
+
 @app.post("/extract")
 async def extract(data: dict):
     text = data.get("text", "")
     result = run_agent(text)
-    return result["data"]   # important
+    return result
