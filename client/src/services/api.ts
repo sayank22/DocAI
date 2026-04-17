@@ -1,9 +1,10 @@
 import axios from "axios";
 
-export const extractInteraction = async (text: string) => {
-  const res = await axios.post("http://localhost:8000/extract", {
-    text,
+export const extractInteraction = async (text, currentState) => {
+  const response = await fetch("http://localhost:8000/extract", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, currentState }), 
   });
-
-  return res.data;
+  return await response.json();
 };
