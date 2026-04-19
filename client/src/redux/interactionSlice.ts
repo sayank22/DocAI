@@ -12,6 +12,7 @@ interface InteractionState {
   materialsShared: string;
   samples: string;
   sentiment: string;
+  interestLevel: string;
   outcomes: string;
   followUp: string;
   suggestedFollowUps: string[]; // specifically typed as an array for mapping
@@ -27,6 +28,7 @@ const initialState: InteractionState = {
   materialsShared: "",
   samples: "",
   sentiment: "",
+  interestLevel: "",
   outcomes: "",
   followUp: "",
   suggestedFollowUps: [],

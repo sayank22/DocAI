@@ -55,8 +55,8 @@ const InteractionForm = () => {
             <select
               name="interactionType"
               value={data.interactionType || ""}
-              onChange={handleChange}
               style={inputStyle}
+              onChange={handleChange}
             >
               <option value="">Select type...</option>
               <option value="Meeting">Meeting</option>
@@ -107,25 +107,39 @@ const InteractionForm = () => {
         </div>
 
         {/* Topics */}
-        <div style={{ ...block }}>
-          <label>Topics Discussed</label>
+<div style={{ ...block }}>
+  <label>Topics Discussed</label>
+  
+  {/* 1. Add a wrapper div with position: relative */}
+  <div style={{ position: "relative", width: "100%" }}>
+    <textarea
+      name="topics"
+      placeholder="Enter key discussion points..."
+      value={data.topics || ""}
+      onChange={handleChange}
+      style={{ 
+        ...textareaStyle, 
+        width: "100%", 
+      }}
+    />
 
-          <textarea
-            name="topics"
-            placeholder="Enter key discussion points..."
-            value={data.topics || ""}
-            onChange={handleChange}
-            style={{ ...textareaStyle }}
-          />
+    <FiMic 
+      style={{ 
+        ...micIcon,
+        position: "absolute",
+        bottom: "15px", 
+        right: "15px",
+        cursor: "pointer", 
+      }} 
+    />
+  </div>
 
-          <FiMic style={micIcon} />
-
-          {/* Voice note */}
-          <div style={voiceNote}>
-            <FiStar />
-            Summarize from Voice Note (Requires Consent)
-          </div>
-        </div>
+  {/* Voice note */}
+  <div style={voiceNote}>
+    <FiStar />
+    Summarize from Voice Note (Requires Consent)
+  </div>
+</div>
 
         {/* Materials */}
         <div style={box}>
@@ -171,6 +185,7 @@ const InteractionForm = () => {
                   name="sentiment"
                   value={item.label}
                   checked={data.sentiment === item.label}
+                  onChange={handleChange}
                 />
                 {item.icon}
                 {item.label}
@@ -178,6 +193,26 @@ const InteractionForm = () => {
             ))}
           </div>
         </div>
+        
+        {/* Interest Level */}
+        <div style={block}>
+  <label>Doctor Interest Level</label>
+
+  <div style={sentimentRow}>
+    {["High", "Medium", "Low"].map((level) => (
+      <label key={level} style={sentimentItem}>
+        <input
+          type="radio"
+          name="interestLevel"
+          value={level}
+          checked={data.interestLevel === level}
+          onChange={handleChange}
+        />
+        {level}
+      </label>
+    ))}
+  </div>
+</div>
 
         {/* Outcomes */}
         <div style={block}>

@@ -37,7 +37,7 @@ def clean_parsed_data(parsed: dict):
 def extract_node(state: AgentState):
     text = state.get("input", "")
 
-    current_date = datetime.datetime.now().strftime("%d-%m-%Y")
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d")
 
     prompt = f"""
 Extract structured CRM data. Today's date is {current_date}.
@@ -45,21 +45,30 @@ Extract structured CRM data. Today's date is {current_date}.
 STRICT RULES:
 - Return ONLY valid JSON
 - No markdown, no explanation
-- Only include fields that are clearly mentioned
+- Do NOT include fields that are not mentioned
+- Do NOT return empty strings
 
 FORMAT RULES:
-- Date → YYYY-MM-DD
-- Time → HH:MM (24-hour)
-Examples:
-- 2:30 PM → 14:30  
-- 11:15 AM → 11:15  
-- 12:00 AM → 00:00  
-- 12:00 PM → 12:00
-- Interaction Type → one of: Meeting, Phone Call, Report Show
-- Sentiment → one of: Positive, Neutral, Negative
+- Date must be in YYYY-MM-DD format
+- Time must be in HH:MM (24-hour format, zero-padded if needed)
+- Interaction Type must be EXACTLY one of:
+  Meeting, Phone Call, Report Show
+- Sentiment must be EXACTLY one of:
+  Positive, Neutral, Negative
 
-Convert:
+CONVERSIONS:
 - "today" → {current_date}
+- "yesterday" → calculate previous date
+- Convert all times to 24-hour format:
+  2:30 PM → 14:30
+  11:15 AM → 11:15
+  12:00 AM → 00:00
+  12:00 PM → 12:00
+
+EXTRACTION RULES:
+- Extract ONLY explicitly mentioned information
+- Normalize values to match required formats
+- If "face-to-face meeting" → Interaction Type = "Meeting"
 
 Text: {text}
 
@@ -110,12 +119,12 @@ def decide_tool_node(state: AgentState):
     - If user is adding a new interaction → log_interaction
     - If user is correcting/updating → edit_interaction
     - If user asks summary → summarize
-    - If user asks sentiment → sentiment
+    - If user asks about sentiment, interest, or analysis → analyze_interaction
     - If user asks next steps → followup
 
     Return ONLY one word:
 
-    log_interaction | edit_interaction | summarize | sentiment | followup
+    log_interaction | edit_interaction | summarize | analyze_interaction | followup
 
     Text: {text}
     """
@@ -127,7 +136,7 @@ def decide_tool_node(state: AgentState):
 
     tool_name = response.choices[0].message.content.strip().lower()
 
-    allowed = ["log_interaction", "edit_interaction", "summarize", "sentiment", "followup"]
+    allowed = ["log_interaction", "edit_interaction", "summarize", "analyze_interaction", "followup"]
 
     if tool_name not in allowed:
         tool_name = "log_interaction"

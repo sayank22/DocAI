@@ -36,12 +36,17 @@ def summarize_tool(text: str):
 
 
 # SENTIMENT (LLM)
-def sentiment_tool(text: str):
+def analyze_interaction_tool(text: str):
     prompt = f"""
-    Analyze sentiment of this interaction.
+    Analyze this interaction and return structured insights.
 
-    Return ONLY one word:
-    Positive / Neutral / Negative
+    Return ONLY valid JSON (no explanation):
+
+    {{
+      "sentiment": "Positive | Neutral | Negative",
+      "interestLevel": "High | Medium | Low",
+      "outcomes": "short summary of doctor's decision or intent"
+    }}
 
     Text: {text}
     """
@@ -51,9 +56,20 @@ def sentiment_tool(text: str):
         messages=[{"role": "user", "content": prompt}],
     )
 
-    sentiment = response.choices[0].message.content.strip()
+    raw = response.choices[0].message.content.strip()
 
-    return {"tool": "sentiment", "data": {"sentiment": sentiment}}
+    if "```" in raw:
+        raw = raw.replace("```json", "").replace("```", "").strip()
+
+    try:
+        parsed = json.loads(raw)
+    except:
+        parsed = {}
+
+    return {
+        "tool": "analyze_interaction",
+        "data": parsed
+    }
 
 
 # FOLLOW-UP (LLM)
@@ -89,6 +105,6 @@ TOOLS = {
     "log_interaction": log_interaction_tool,
     "edit_interaction": edit_interaction_tool,
     "summarize": summarize_tool,
-    "sentiment": sentiment_tool,
+    "analyze_interaction": analyze_interaction_tool,
     "followup": followup_tool,
 }
