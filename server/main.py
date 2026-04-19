@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -6,15 +8,20 @@ from agent.agent import run_agent
 
 app = FastAPI()
 
+# Fetch the FRONTEND_URL from .env. 
+raw_origins = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
+allowed_origins = [origin.strip() for origin in raw_origins.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Updated: Added currentState to receive the frontend form data
+# Updated: Added currentState to receive the frontend form data
 class AgentRequest(BaseModel):
     text: str
     currentState: Dict[str, Any] = {} # Defaults to empty dict if not provided
@@ -25,14 +32,14 @@ def root():
 
 @app.post("/extract")
 async def extract(request: AgentRequest):
-    # ✅ Inject the current frontend state into the prompt so the LLM has context
+    # Inject the current frontend state into the prompt so the LLM has context
     context_injected_prompt = f"""
     Current Form State: {request.currentState}
     
     User Request: {request.text}
     """
     
-    # ✅ Pass the combined prompt to your LangGraph agent
+    # Pass the combined prompt to your LangGraph agent
     result = run_agent(context_injected_prompt)
     
     return result

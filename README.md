@@ -14,7 +14,7 @@
 
 # DocAI
 
-Live Demo: [https://jivaka-sayankundu.vercel.app](https://jivaka-sayankundu.vercel.app)
+Live Demo: [https://doc-ai-sayan-kundu-eta.vercel.app](https://doc-ai-sayan-kundu-eta.vercel.app)
 
 ---
 
@@ -58,88 +58,92 @@ Automatically fills HCP interaction form from natural language input.
 
 ---
 
-## 🚀 Technologies I Used
+## 🛠 Tech Stack
 
-**Frontend:**
- React.js
- TypeScript
- Redux Toolkit (state management)
- CSS (custom styling)
+**Frontend**
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 
-**Backend:**
- Python
- LangGraph (AI workflow orchestration)
- Groq API (LLM - LLaMA 3.3 70B)
- FastAPI (or your API layer)
+**Backend & Database**
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 
-**Database:** 
-Supabase (PostgreSQL)
-
-**AI / Architecture:**
- LLM-driven tool selection
- Prompt engineering for structured extraction
- JSON-based data pipeline
- Modular tool system
+**AI & Architecture**
+* **LLM Engine:** Groq API (LLaMA 3.3 70B)
+* **Orchestration:** LangGraph
+* **System Design:** Modular tool system with LLM-driven tool selection
+* **Data Pipeline:** Prompt engineering for structured, JSON-based extraction
 
 
 ---
 
 ## 🌐 Live Links
 
-**🔗 Frontend: https://jivaka-sayankundu.vercel.app**
-**🔗 Backend API: https://jivaka-backend.onrender.com**
+**🔗 Frontend: [https://doc-ai-sayan-kundu-eta.vercel.app](https://doc-ai-sayan-kundu-eta.vercel.app)**  
+**🔗 Backend API: [https://docai-5ro0.onrender.com](https://docai-5ro0.onrender.com)**
 
 ---
 
 
 ## Getting Started
 
-# 1. Clone the repo
+### 1. Clone the repo
    ```bash
    git clone https://github.com/sayank22/DocAI.git
    ```
 
-# 2. Backend Setup
+### 2. Backend Setup
+Navigate to the server directory, create a virtual environment, and install the required dependencies.
    ```bash
   cd server
- python -m venv venv
- venv\Scripts\activate   # or source venv/bin/activate
- pip install -r requirements.txt
+python -m venv venv
 
+# Activate the virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
    ```
-**Create a .env file in /Server:**
+**Set up environment variables::**
+Create a .env file inside the server/ directory and add your API credentials:
 ```ini
+FRONTEND_URL=your_frontend_url
 GROQ_API_KEY=your_groq_api_key
-
 ```
-**Run the server:**
+**Run the backend server:**
 ```bash
-
 uvicorn main:app --reload
-
 ```
 
-# 3. Frontend Setup
+### 3. Frontend Setup
+Open a new terminal window, navigate to the client directory, and install the dependencies.
    ```bash
   cd client
 npm install
-
    ```
-**Create a .env file in /client:**
+**Set up environment variables:**
+Create a .env file inside the client/ directory and add your backend URL & Supabase credentials:
 ```ini
+VITE_API_URL=https://your-backend.onrender.com
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-
 ```
-**Run the server:**
+**Run the frontend application:**
 ```bash
-
 npm run dev
-
 ```
+
+---
 
 ## Demo
 
-See it live: [https://jivaka-sayankundu.vercel.app](https://jivaka-sayankundu.vercel.app)
+See it live: [https://doc-ai-sayan-kundu-eta.vercel.app](https://doc-ai-sayan-kundu-eta.vercel.app)
 
 ![Desktop Demo 1](client/src/assets/Screenshot.png)
