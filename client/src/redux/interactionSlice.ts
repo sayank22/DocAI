@@ -19,14 +19,14 @@ interface InteractionState {
 
 const initialState: InteractionState = {
   hcpName: "",
-  interactionType: "Meeting", // Matches the default dropdown in the screenshot
+  interactionType: "",
   date: "",
   time: "",
   attendees: "",
   topics: "",
   materialsShared: "",
   samples: "",
-  sentiment: "Neutral", // Matches default radio button
+  sentiment: "",
   outcomes: "",
   followUp: "",
   suggestedFollowUps: [],
@@ -36,16 +36,15 @@ const interactionSlice = createSlice({
   name: "interaction",
   initialState,
   reducers: {
-    // ✅ Single field update (manual/debug use)
+    // Single field update (manual/debug use)
     updateField: (
       state,
       action: PayloadAction<{ field: keyof InteractionState; value: any }>
     ) => {
-      // @ts-ignore - dynamic assignment for different types (string vs array)
       state[action.payload.field] = action.payload.value;
     },
 
-    // ✅ FULL overwrite (used for log_interaction)
+    // FULL overwrite (used for log_interaction)
     setAllFields: (
       state,
       action: PayloadAction<Partial<InteractionState>>

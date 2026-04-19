@@ -1,61 +1,79 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAllFields, updateFields } from "../redux/interactionSlice";
+import type { RootState } from "../redux/store";
 import { extractInteraction } from "../services/api";
+import { supabase } from "../services/supabase";
+
+type Message = {
+  type: "user" | "bot";
+  text: string;
+};
 
 const ChatInterface = () => {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false); // ✅ Added loading state
-  
+  const data = useSelector((state: RootState) => state.interaction);
+  const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
   
-  // ✅ Grab the current form state from Redux to send to the backend
+  // Grab the current form state from Redux to send to the backend
   // (Adjust the state.interaction path based on your actual Redux store setup)
-  const currentFormState = useSelector((state: any) => state.interaction);
+  const currentFormState = useSelector((state: RootState) => state.interaction);
 
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  if (!input.trim() || isLoading) return;
 
-    const userMessage = { type: "user", text: input };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput(""); // Clear input immediately for better UX
-    setIsLoading(true);
+  const userMessage = { type: "user", text: input };
+  setMessages((prev) => [...prev, userMessage]);
+  setInput("");
+  setIsLoading(true);
 
+  try {
+    const response = await extractInteraction(input, currentFormState);
+
+    const botMessage = { type: "bot", text: "" };
+
+    if (response.tool === "log_interaction") {
+      dispatch(setAllFields(response.data));
+      botMessage.text = "New interaction logged ✅";
+    } else {
+      dispatch(updateFields(response.data));
+      botMessage.text = "Updated: " + Object.keys(response.data).join(", ");
+    }
+
+    setMessages((prev) => [...prev, botMessage]);
+  } catch (err) {
+    console.error(err);
+    setMessages((prev) => [
+      ...prev,
+      { type: "bot", text: "Error: Failed to process request." },
+    ]);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+const handleSaveToDB = async () => {
+    setIsSaving(true);
+    
     try {
-      // ✅ Pass currentFormState to the API so the LLM has context for edits
-      const response = await extractInteraction(input, currentFormState);
+      const { error } = await supabase
+        .from('interactions')
+        .insert([data]); // 'data' is your Redux state
 
-      let botMessage: any = { type: "bot", text: "" };
-
-      if (response.tool === "log_interaction") {
-        dispatch(setAllFields(response.data));
-        botMessage.text = "New interaction logged ✅";
-      } 
-      else if (response.tool === "edit_interaction") {
-        dispatch(updateFields(response.data));
-        botMessage.text = "Updated: " + Object.keys(response.data).join(", ");
-      } 
-      // 🔥 CRITICAL FIX: These tools must update the left form, not just the chat!
-      else if (response.tool === "summarize") {
-        dispatch(updateFields({ topics: response.summary })); 
-        botMessage.text = "I've updated the Topics Discussed with a summary.";
-      } 
-      else if (response.tool === "sentiment") {
-        dispatch(updateFields({ sentiment: response.sentiment }));
-        botMessage.text = `Sentiment updated to ${response.sentiment}.`;
-      } 
-      else if (response.tool === "followup") {
-        dispatch(updateFields({ followUp: response.followUp }));
-        botMessage.text = "I've added the suggested follow-up actions.";
+      if (error) {
+        console.error("Database Error:", error.message);
+        alert("Failed to save: " + error.message);
+      } else {
+        console.log("Success! Saved to Postgres.");
+        alert("Interaction saved successfully!");
       }
-
-      setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
-      console.error(err);
-      setMessages((prev) => [...prev, { type: "bot", text: "Error: Failed to process request." }]);
+      console.error("Unexpected error:", err);
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
@@ -153,6 +171,23 @@ const ChatInterface = () => {
           }}
         >
           {isLoading ? "..." : "Log"}
+        </button>
+      </div>
+      {/* Save to DB Button */}
+      <div style={{ padding: "12px", borderTop: "1px solid #eee" }}>
+        <button
+          onClick={handleSaveToDB}
+          disabled={isSaving}
+          style={{
+            padding: "10px 16px",
+            background: isSaving ? "#9ca3af" : "#2563eb",
+            color: "#fff",
+            border: "none",
+            borderRadius: "6px",
+            cursor: isSaving ? "not-allowed" : "pointer",
+          }}
+        >
+          {isSaving ? "..." : "Save to DB"}
         </button>
       </div>
     </div>

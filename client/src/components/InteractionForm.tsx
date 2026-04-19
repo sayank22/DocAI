@@ -1,14 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
+import type { CSSProperties } from "react";
 import type { RootState } from "../redux/store";
 import { updateField } from "../redux/interactionSlice";
 
+import {
+  FiSearch,
+  FiMic,
+  FiPlus,
+  FiSmile,
+  FiMeh,
+  FiFrown,
+  FiClock,
+  FiStar,
+} from "react-icons/fi";
+
 const InteractionForm = () => {
   const dispatch = useDispatch();
-  // Ensure your RootState defines these types properly, especially suggestedFollowUps as string[]
   const data = useSelector((state: RootState) => state.interaction);
 
-  // Keeping handleChange in case you want to allow manual edits later, 
-  // but we will set inputs to readOnly to prove the AI works.
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -21,29 +30,14 @@ const InteractionForm = () => {
   };
 
   return (
-    <div
-      style={{
-        width: "65%",
-        padding: "20px",
-        background: "#f3f4f6",
-        height: "100vh",
-        overflowY: "auto",
-      }}
-    >
+    <div style={container}>
       <h2 style={{ marginBottom: "10px" }}>Log HCP Interaction</h2>
 
-      <div
-        style={{
-          background: "#fff",
-          padding: "20px",
-          borderRadius: "10px",
-          boxShadow: "0 0 5px rgba(0,0,0,0.05)",
-        }}
-      >
+      <div style={card}>
         <h4 style={{ marginBottom: "15px" }}>Interaction Details</h4>
 
         {/* Row 1 */}
-        <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+        <div style={row}>
           <div style={{ flex: 1 }}>
             <label>HCP Name</label>
             <input
@@ -52,180 +46,311 @@ const InteractionForm = () => {
               value={data.hcpName || ""}
               onChange={handleChange}
               style={inputStyle}
-              readOnly // 🔥 Forces AI usage
             />
           </div>
 
+          {/*Interaction Type With Dropdown Options*/}
           <div style={{ flex: 1 }}>
             <label>Interaction Type</label>
-            <input
+            <select
               name="interactionType"
               value={data.interactionType || ""}
               onChange={handleChange}
               style={inputStyle}
-              readOnly
-            />
+            >
+              <option value="">Select type...</option>
+              <option value="Meeting">Meeting</option>
+              <option value="Phone Call">Consult</option>
+              <option value="Phone Call">Report Show</option>
+            </select>
           </div>
         </div>
 
         {/* Row 2 */}
-        <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+        {/* Date */}
+        <div style={row}>
           <div style={{ flex: 1 }}>
             <label>Date</label>
             <input
-              name="date"
               type="date"
+              name="date"
               value={data.date || ""}
               onChange={handleChange}
               style={inputStyle}
-              readOnly
             />
           </div>
 
+          {/* Time */}
           <div style={{ flex: 1 }}>
             <label>Time</label>
             <input
-              name="time"
               type="time"
+              name="time"
               value={data.time || ""}
               onChange={handleChange}
-              style={inputStyle}
-              readOnly
+              style={{ ...inputStyle }}
             />
+            <FiClock style={clockIcon} />
           </div>
         </div>
 
         {/* Attendees */}
-        <div style={{ marginBottom: "10px" }}>
+        <div style={block}>
           <label>Attendees</label>
           <input
             name="attendees"
-            placeholder="Enter names..."
+            placeholder="Enter names or search..."
             value={data.attendees || ""}
             onChange={handleChange}
             style={inputStyle}
-            readOnly
           />
         </div>
 
         {/* Topics */}
-        <div style={{ marginBottom: "10px" }}>
+        <div style={{ ...block }}>
           <label>Topics Discussed</label>
+
           <textarea
             name="topics"
-            placeholder="Enter discussion points..."
+            placeholder="Enter key discussion points..."
             value={data.topics || ""}
             onChange={handleChange}
-            style={textareaStyle}
-            readOnly
+            style={{ ...textareaStyle }}
           />
+
+          <FiMic style={micIcon} />
+
+          {/* Voice note */}
+          <div style={voiceNote}>
+            <FiStar />
+            Summarize from Voice Note (Requires Consent)
+          </div>
         </div>
 
-        {/* Materials - ✅ Now dynamic based on AI input */}
-        <div style={boxStyle}>
-          <strong>Materials Shared</strong>
-          {data.materialsShared ? (
-            <p style={{ color: "#000", marginTop: "5px" }}>{data.materialsShared}</p>
-          ) : (
-            <p style={{ color: "#777", marginTop: "5px" }}>No materials added.</p>
-          )}
+        {/* Materials */}
+        <div style={box}>
+          <div style={boxHeader}>
+            <strong>Materials Shared</strong>
+            <button style={iconBtn}>
+              <FiSearch /> Search/Add
+            </button>
+          </div>
+
+          <p style={mutedText}>
+            {data.materialsShared || "No materials added."}
+          </p>
         </div>
 
         {/* Samples */}
-        <div style={boxStyle}>
-          <strong>Samples Distributed</strong>
-          {data.samples ? (
-            <p style={{ color: "#000", marginTop: "5px" }}>{data.samples}</p>
-          ) : (
-            <p style={{ color: "#777", marginTop: "5px" }}>No samples added.</p>
-          )}
+        <div style={box}>
+          <div style={boxHeader}>
+            <strong>Samples Distributed</strong>
+            <button style={iconBtn}>
+              <FiPlus /> Add Sample
+            </button>
+          </div>
+
+          <p style={mutedText}>
+            {data.samples || "No samples added."}
+          </p>
         </div>
 
         {/* Sentiment */}
-        <div style={{ marginTop: "10px" }}>
-          <label>Observed HCP Sentiment</label>
-          <div style={{ display: "flex", gap: "15px", marginTop: "5px" }}>
-            {["Positive", "Neutral", "Negative"].map((val) => (
-              <label key={val}>
+        <div style={block}>
+          <label>Observed/Inferred HCP Sentiment</label>
+
+          <div style={sentimentRow}>
+            {[
+              { label: "Positive", icon: <FiSmile />, color: "#16a34a" },
+              { label: "Neutral", icon: <FiMeh />, color: "#f59e0b" },
+              { label: "Negative", icon: <FiFrown />, color: "#dc2626" },
+            ].map((item) => (
+              <label key={item.label} style={{ ...sentimentItem, color: item.color }}>
                 <input
                   type="radio"
                   name="sentiment"
-                  value={val}
-                  checked={data.sentiment === val}
-                  readOnly // Prevents manual clicking
+                  value={item.label}
+                  checked={data.sentiment === item.label}
                 />
-                {val}
+                {item.icon}
+                {item.label}
               </label>
             ))}
           </div>
         </div>
 
         {/* Outcomes */}
-        <div style={{ marginTop: "10px" }}>
+        <div style={block}>
           <label>Outcomes</label>
           <textarea
             name="outcomes"
-            placeholder="Key outcomes..."
+            placeholder="Key outcomes or agreements..."
             value={data.outcomes || ""}
             onChange={handleChange}
             style={textareaStyle}
-            readOnly
           />
         </div>
 
-        {/* Follow-up */}
-        <div style={{ marginTop: "10px" }}>
+        {/* Follow up */}
+        <div style={block}>
           <label>Follow-up Actions</label>
           <textarea
             name="followUp"
-            placeholder="Next steps..."
+            placeholder="Enter next steps or tasks..."
             value={data.followUp || ""}
             onChange={handleChange}
             style={textareaStyle}
-            readOnly
           />
         </div>
 
-        {/* ✅ AI Suggested Follow-ups (Matches the screenshot) */}
-        {data.suggestedFollowUps && data.suggestedFollowUps.length > 0 && (
-          <div style={{ marginTop: "15px", fontSize: "14px" }}>
-            <strong style={{ color: "#4b5563" }}>AI Suggested Follow-ups:</strong>
-            <ul style={{ listStyleType: "none", padding: 0, marginTop: "5px" }}>
-              {data.suggestedFollowUps.map((item: str, idx: number) => (
-                <li key={idx} style={{ color: "#2563eb", marginBottom: "4px", cursor: "pointer" }}>
+        {/* AI Suggestions */}
+        {data.suggestedFollowUps?.length > 0 && (
+          <div style={aiBox}>
+            <strong style={{ color: "#4b5563" }}>
+              AI Suggested Follow-ups:
+            </strong>
+
+            <ul style={aiList}>
+              {data.suggestedFollowUps.map((item: string, i: number) => (
+                <li key={i} style={aiItem}>
                   + {item}
                 </li>
               ))}
             </ul>
           </div>
         )}
-
       </div>
     </div>
   );
 };
 
-// styles
+export default InteractionForm;
+
+
+
+
+
+/* ================= STYLES ================= */
+
+const container: CSSProperties = {
+  width: "65%",
+  padding: "20px",
+  background: "#f3f4f6",
+  height: "100vh",
+  overflowY: "auto",
+};
+
+const card = {
+  background: "#fff",
+  padding: "20px",
+  borderRadius: "10px",
+  boxShadow: "0 0 6px rgba(0,0,0,0.05)",
+};
+
+const row = {
+  display: "flex",
+  gap: "10px",
+  marginBottom: "10px",
+};
+
+const block = {
+  marginBottom: "10px",
+};
+
 const inputStyle = {
   width: "100%",
   padding: "8px",
   borderRadius: "6px",
-  border: "1px solid #ccc",
+  border: "1px solid #d1d5db",
   marginTop: "5px",
-  backgroundColor: "#f9fafb", // Slight grey to indicate it is controlled by AI
+  backgroundColor: "#f9fafb",
 };
 
 const textareaStyle = {
   ...inputStyle,
-  minHeight: "70px",
+  minHeight: "80px",
 };
 
-const boxStyle = {
-  border: "1px solid #ddd",
+const micIcon = {
+  position: "absolute" as const,
+  right: "10px",
+  bottom: "38px",
+  color: "#6b7280",
+};
+
+const clockIcon = {
+  position: "absolute" as const,
+  right: "10px",
+  top: "36px",
+  color: "#6b7280",
+};
+
+const voiceNote = {
+  fontSize: "13px",
+  color: "#6b7280",
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+  marginTop: "6px",
+  cursor: "pointer",
+};
+
+const box = {
+  border: "1px solid #e5e7eb",
   padding: "10px",
   borderRadius: "6px",
   marginTop: "10px",
   background: "#f9fafb",
 };
 
-export default InteractionForm;
+const boxHeader = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+
+const iconBtn = {
+  display: "flex",
+  alignItems: "center",
+  gap: "5px",
+  fontSize: "12px",
+  padding: "4px 8px",
+  border: "1px solid #d1d5db",
+  borderRadius: "6px",
+  background: "#fff",
+  cursor: "pointer",
+};
+
+const mutedText = {
+  color: "#6b7280",
+  marginTop: "5px",
+};
+
+const sentimentRow = {
+  display: "flex",
+  gap: "20px",
+  marginTop: "8px",
+};
+
+const sentimentItem = {
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+  cursor: "pointer",
+};
+
+const aiBox = {
+  marginTop: "15px",
+};
+
+const aiList = {
+  listStyle: "none",
+  padding: 0,
+  marginTop: "5px",
+};
+
+const aiItem = {
+  color: "#2563eb",
+  marginBottom: "4px",
+  cursor: "pointer",
+};

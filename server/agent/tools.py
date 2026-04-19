@@ -76,7 +76,12 @@ def followup_tool(text: str):
     if "```" in raw:
         raw = raw.replace("```json", "").replace("```", "").strip()
 
-    return {"tool": "followup", "followUp": raw}
+    return {
+    "tool": "followup",
+    "data": {
+        "followUp": raw
+    }
+}
 
 
 # TOOL MAP

@@ -40,28 +40,43 @@ def extract_node(state: AgentState):
     current_date = datetime.datetime.now().strftime("%d-%m-%Y")
 
     prompt = f"""
-    Extract structured CRM data. Today's date is {current_date}.
+Extract structured CRM data. Today's date is {current_date}.
 
-    STRICT RULES:
-    - Return ONLY valid JSON
-    - No markdown
-    - No explanation
-    - Only include fields that are clearly mentioned
+STRICT RULES:
+- Return ONLY valid JSON
+- No markdown, no explanation
+- Only include fields that are clearly mentioned
 
-    Text: {text}
+FORMAT RULES:
+- Date → YYYY-MM-DD
+- Time → HH:MM (24-hour)
+Examples:
+- 2:30 PM → 14:30  
+- 11:15 AM → 11:15  
+- 12:00 AM → 00:00  
+- 12:00 PM → 12:00
+- Interaction Type → one of: Meeting, Phone Call, Report Show
+- Sentiment → one of: Positive, Neutral, Negative
 
-    {{
-      "hcpName": "",
-      "date": "",
-      "interactionType": "",
-      "attendees": "",
-      "topics": "",
-      "materialsShared": "",
-      "sentiment": "",
-      "outcomes": "",
-      "followUp": ""
-    }}
-    """
+Convert:
+- "today" → {current_date}
+
+Text: {text}
+
+{{
+  "hcpName": "",
+  "date": "",
+  "time": "",
+  "interactionType": "",
+  "attendees": "",
+  "topics": "",
+  "materialsShared": "",
+  "samples": "",
+  "sentiment": "",
+  "outcomes": "",
+  "followUp": ""
+}}
+"""
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
