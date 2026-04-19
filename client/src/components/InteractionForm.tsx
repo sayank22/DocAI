@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ChangeEvent } from "react";
 import type { RootState } from "../redux/store";
 import { updateField } from "../redux/interactionSlice";
+import type { StringInteractionField } from "../redux/interactionSlice";
 
 import {
   FiSearch,
@@ -19,11 +20,11 @@ const InteractionForm = () => {
   const data = useSelector((state: RootState) => state.interaction);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     dispatch(
       updateField({
-        field: e.target.name as keyof typeof data,
+        field: e.target.name as StringInteractionField,
         value: e.target.value,
       })
     );

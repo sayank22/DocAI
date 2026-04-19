@@ -15,8 +15,14 @@ interface InteractionState {
   interestLevel: string;
   outcomes: string;
   followUp: string;
-  suggestedFollowUps: string[]; // specifically typed as an array for mapping
+  suggestedFollowUps: string[];
 }
+
+export type StringInteractionField = {
+  [Field in keyof InteractionState]: InteractionState[Field] extends string
+    ? Field
+    : never;
+}[keyof InteractionState];
 
 const initialState: InteractionState = {
   hcpName: "",
@@ -41,14 +47,14 @@ const interactionSlice = createSlice({
     // Single field update (manual/debug use)
     updateField: (
       state,
-      action: PayloadAction<{ field: keyof InteractionState; value: any }>
+      action: PayloadAction<{ field: StringInteractionField; value: string }>
     ) => {
       state[action.payload.field] = action.payload.value;
     },
 
     // FULL overwrite (used for log_interaction)
     setAllFields: (
-      state,
+      _state,
       action: PayloadAction<Partial<InteractionState>>
     ) => {
       return { ...initialState, ...action.payload };

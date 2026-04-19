@@ -25,7 +25,7 @@ const ChatInterface = () => {
   const handleSend = async () => {
   if (!input.trim() || isLoading) return;
 
-  const userMessage = { type: "user", text: input };
+  const userMessage: Message = { type: "user", text: input };
   setMessages((prev) => [...prev, userMessage]);
   setInput("");
   setIsLoading(true);
@@ -33,7 +33,7 @@ const ChatInterface = () => {
   try {
     const response = await extractInteraction(input, currentFormState);
 
-    const botMessage = { type: "bot", text: "" };
+    const botMessage: Message = { type: "bot", text: "" };
 
     if (response.tool === "log_interaction") {
       dispatch(setAllFields(response.data));
