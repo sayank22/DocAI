@@ -1,27 +1,36 @@
-# server/agent/tools.py
-from typing import Dict
+from typing import Dict, List
 import os
 from dotenv import load_dotenv
 from groq import Groq
 import json
 
-
-# Load env before initializing client
-load_dotenv()
+# Load env
+load_dotenv(".env.local")
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
-# LOG TOOL
+# ---------------- LOG TOOL ----------------
 def log_interaction_tool(data: Dict):
-    return {"tool": "log_interaction", "data": data}
+    # 🔥 Add short AI suggestions for initial log
+    return {
+        "tool": "log_interaction",
+        "data": {
+            **data,
+            "suggestedFollowUps": [
+                "Schedule follow-up next week",
+                "Share product brochure",
+                "Check patient response"
+            ]
+        }
+    }
 
 
-# EDIT TOOL
+# ---------------- EDIT TOOL ----------------
 def edit_interaction_tool(data: Dict):
     return {"tool": "edit_interaction", "data": data}
 
 
-# SUMMARIZE (LLM)
+# ---------------- SUMMARIZE ----------------
 def summarize_tool(text: str):
     prompt = f"Summarize this interaction in 1-2 lines:\n{text}"
 
@@ -32,24 +41,27 @@ def summarize_tool(text: str):
 
     summary = response.choices[0].message.content.strip()
 
-    return {"tool": "summarize", "data": {"topics": summary}}
+    return {
+        "tool": "summarize",
+        "data": {"topics": summary}
+    }
 
 
-# SENTIMENT (LLM)
+# ---------------- ANALYZE (Sentiment + Outcome) ----------------
 def analyze_interaction_tool(text: str):
     prompt = f"""
-    Analyze this interaction and return structured insights.
+Analyze this interaction.
 
-    Return ONLY valid JSON (no explanation):
+Return ONLY valid JSON:
 
-    {{
-      "sentiment": "Positive | Neutral | Negative",
-      "interestLevel": "High | Medium | Low",
-      "outcomes": "short summary of doctor's decision or intent"
-    }}
+{{
+  "sentiment": "Positive | Neutral | Negative",
+  "outcomes": "short summary",
+  "insight": "1 short line describing overall interaction"
+}}
 
-    Text: {text}
-    """
+Text: {text}
+"""
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
@@ -60,6 +72,12 @@ def analyze_interaction_tool(text: str):
 
     if "```" in raw:
         raw = raw.replace("```json", "").replace("```", "").strip()
+
+    start = raw.find("{")
+    end = raw.rfind("}") + 1
+
+    if start != -1 and end != -1:
+        raw = raw[start:end]
 
     try:
         parsed = json.loads(raw)
@@ -72,35 +90,52 @@ def analyze_interaction_tool(text: str):
     }
 
 
-# FOLLOW-UP (LLM)
+# ---------------- FOLLOW-UP (AI Suggestions) ----------------
 def followup_tool(text: str):
     prompt = f"""
-    Suggest a professional follow-up action based on this interaction:
+Suggest 2-3 professional follow-up actions.
 
-    Text: {text}
-    """
+Return ONLY JSON array of strings.
+
+Example:
+["Schedule follow-up meeting", "Send brochure", "Check patient response"]
+
+Text: {text}
+"""
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
     )
 
-    # ✅ YOU MUST DEFINE 'raw' HERE
     raw = response.choices[0].message.content.strip()
 
-    # Now you can safely check it for markdown
     if "```" in raw:
         raw = raw.replace("```json", "").replace("```", "").strip()
 
+    # 🔥 Extract JSON safely
+    start = raw.find("[")
+    end = raw.rfind("]") + 1
+
+    if start != -1 and end != -1:
+        raw = raw[start:end]
+
+    try:
+        parsed = json.loads(raw)
+        if not isinstance(parsed, list):
+            parsed = []
+    except:
+        parsed = []
+
     return {
-    "tool": "followup",
-    "data": {
-        "followUp": raw
+        "tool": "followup",
+        "data": {
+            "suggestedFollowUps": parsed
+        }
     }
-}
 
 
-# TOOL MAP
+# ---------------- TOOL MAP ----------------
 TOOLS = {
     "log_interaction": log_interaction_tool,
     "edit_interaction": edit_interaction_tool,

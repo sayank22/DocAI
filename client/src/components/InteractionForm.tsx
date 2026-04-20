@@ -11,7 +11,6 @@ import {
   FiSmile,
   FiMeh,
   FiFrown,
-  FiClock,
   FiStar,
 } from "react-icons/fi";
 
@@ -32,15 +31,18 @@ const InteractionForm = () => {
 
   return (
     <div style={container}>
-      <h2 style={{ marginBottom: "10px" }}>Log HCP Interaction</h2>
+      <h2 style={{ marginBottom: "15px", color: "#1f2937" }}>Log HCP Interaction</h2>
 
       <div style={card}>
-        <h4 style={{ marginBottom: "15px" }}>Interaction Details</h4>
+        {/* Interaction Details Header with Line */}
+        <div style={cardHeader}>
+          <h4 style={{ margin: 0, color: "#1f2937" }}>Interaction Details</h4>
+        </div>
 
-        {/* Row 1 */}
+        {/* Row 1: Name & Type */}
         <div style={row}>
-          <div style={{ flex: 1 }}>
-            <label>HCP Name</label>
+          <div style={flexCol}>
+            <label style={labelStyle}>HCP Name</label>
             <input
               name="hcpName"
               placeholder="Search or select HCP..."
@@ -50,28 +52,26 @@ const InteractionForm = () => {
             />
           </div>
 
-          {/*Interaction Type With Dropdown Options*/}
-          <div style={{ flex: 1 }}>
-            <label>Interaction Type</label>
+          <div style={flexCol}>
+            <label style={labelStyle}>Interaction Type</label>
+            {/* Select-options with border */}
             <select
               name="interactionType"
               value={data.interactionType || ""}
-              style={inputStyle}
+              style={selectBorder}
               onChange={handleChange}
             >
-              <option value="">Select type...</option>
               <option value="Meeting">Meeting</option>
               <option value="Phone Call">Consult</option>
-              <option value="Phone Call">Report Show</option>
+              <option value="Report Show">Report Show</option>
             </select>
           </div>
         </div>
 
-        {/* Row 2 */}
-        {/* Date */}
+        {/* Row 2: Date & Time */}
         <div style={row}>
-          <div style={{ flex: 1 }}>
-            <label>Date</label>
+          <div style={flexCol}>
+            <label style={labelStyle}>Date</label>
             <input
               type="date"
               name="date"
@@ -81,23 +81,21 @@ const InteractionForm = () => {
             />
           </div>
 
-          {/* Time */}
-          <div style={{ flex: 1 }}>
-            <label>Time</label>
+          <div style={flexCol}>
+            <label style={labelStyle}>Time</label>
             <input
               type="time"
               name="time"
               value={data.time || ""}
               onChange={handleChange}
-              style={{ ...inputStyle }}
+              style={inputStyle}
             />
-            <FiClock style={clockIcon} />
           </div>
         </div>
 
         {/* Attendees */}
         <div style={block}>
-          <label>Attendees</label>
+          <label style={labelStyle}>Attendees</label>
           <input
             name="attendees"
             placeholder="Enter names or search..."
@@ -108,108 +106,105 @@ const InteractionForm = () => {
         </div>
 
         {/* Topics */}
-<div style={{ ...block }}>
-  <label>Topics Discussed</label>
-  
-  {/* 1. Add a wrapper div with position: relative */}
-  <div style={{ position: "relative", width: "100%" }}>
-    <textarea
-      name="topics"
-      placeholder="Enter key discussion points..."
-      value={data.topics || ""}
-      onChange={handleChange}
-      style={{ 
-        ...textareaStyle, 
-        width: "100%", 
-      }}
-    />
+        <div style={block}>
+          <label style={labelStyle}>Topics Discussed</label>
+          <div style={{ position: "relative", width: "100%" }}>
+            <textarea
+              name="topics"
+              placeholder="Enter key discussion points..."
+              value={data.topics || ""}
+              onChange={handleChange}
+              style={{ ...textareaStyle, paddingRight: "35px" }}
+            />
+            <FiMic style={micIcon} />
+          </div>
 
-    <FiMic 
-      style={{ 
-        ...micIcon,
-        position: "absolute",
-        bottom: "15px", 
-        right: "15px",
-        cursor: "pointer", 
-      }} 
-    />
-  </div>
+          <div style={voiceNote}>
+            <FiStar style={{ color: "#4b5563" }} />
+            Summarize from Voice Note (Requires Consent)
+          </div>
+        </div>
 
-  {/* Voice note */}
-  <div style={voiceNote}>
-    <FiStar />
-    Summarize from Voice Note (Requires Consent)
-  </div>
-</div>
-
-        {/* Materials */}
+        {/* Materials Shared */}
         <div style={box}>
           <div style={boxHeader}>
-            <strong>Materials Shared</strong>
+            <span style={labelStyle}>Materials Shared</span>
             <button style={iconBtn}>
               <FiSearch /> Search/Add
             </button>
           </div>
-
           <p style={mutedText}>
             {data.materialsShared || "No materials added."}
           </p>
         </div>
 
-        {/* Samples */}
+        {/* Samples Distributed */}
         <div style={box}>
           <div style={boxHeader}>
-            <strong>Samples Distributed</strong>
+            <span style={labelStyle}>Samples Distributed</span>
             <button style={iconBtn}>
               <FiPlus /> Add Sample
             </button>
           </div>
-
           <p style={mutedText}>
             {data.samples || "No samples added."}
           </p>
         </div>
 
         {/* Sentiment */}
-        <div style={block}>
-          <label>Observed/Inferred HCP Sentiment</label>
+<div style={block}>
+  {/* Label + AI Tag */}
+  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+    <label style={labelStyle}>
+      Observed/Inferred HCP Sentiment
+    </label>
 
-          <div style={sentimentRow}>
-            {[
-              { label: "Positive", icon: <FiSmile />, color: "#16a34a" },
-              { label: "Neutral", icon: <FiMeh />, color: "#f59e0b" },
-              { label: "Negative", icon: <FiFrown />, color: "#dc2626" },
-            ].map((item) => (
-              <label key={item.label} style={{ ...sentimentItem, color: item.color }}>
-                <input
-                  type="radio"
-                  name="sentiment"
-                  value={item.label}
-                  checked={data.sentiment === item.label}
-                  onChange={handleChange}
-                />
-                {item.icon}
-                {item.label}
-              </label>
-            ))}
-          </div>
-        </div>
-        
-        {/* Interest Level */}
-        <div style={block}>
-  <label>Doctor Interest Level</label>
+    {data.isAiInsight && data.insight &&(
+      <div
+    style={{
+      fontSize: "13px",
+      color: "#374151",
+      marginTop: "6px",
+      padding: "6px 10px",
+      background: "#f3f4f6",
+      borderRadius: "6px",
+    }}
+  >
+    {data.insight}
+  </div>
+    )}
+  </div>
 
+  {/* Options */}
   <div style={sentimentRow}>
-    {["High", "Medium", "Low"].map((level) => (
-      <label key={level} style={sentimentItem}>
+    {[
+      { label: "Positive", icon: <FiSmile />, color: "#16a34a" },
+      { label: "Neutral", icon: <FiMeh />, color: "#3b82f6" },
+      { label: "Negative", icon: <FiFrown />, color: "#dc2626" },
+    ].map((item) => (
+      <label
+        key={item.label}
+        style={{ ...sentimentItem, color: "#4b5563" }}
+      >
         <input
           type="radio"
-          name="interestLevel"
-          value={level}
-          checked={data.interestLevel === level}
+          name="sentiment"
+          value={item.label}
+          checked={data.sentiment === item.label}
           onChange={handleChange}
         />
-        {level}
+
+        <span
+          style={{
+            color: item.color,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {item.icon}
+        </span>
+
+        {item.label}
       </label>
     ))}
   </div>
@@ -217,7 +212,7 @@ const InteractionForm = () => {
 
         {/* Outcomes */}
         <div style={block}>
-          <label>Outcomes</label>
+          <label style={labelStyle}>Outcomes</label>
           <textarea
             name="outcomes"
             placeholder="Key outcomes or agreements..."
@@ -229,32 +224,37 @@ const InteractionForm = () => {
 
         {/* Follow up */}
         <div style={block}>
-          <label>Follow-up Actions</label>
+          <label style={labelStyle}>Follow-up Actions</label>
           <textarea
             name="followUp"
             placeholder="Enter next steps or tasks..."
             value={data.followUp || ""}
             onChange={handleChange}
-            style={textareaStyle}
+            style={{...textareaStyle, marginBottom: "8px"}}
           />
-        </div>
-
-        {/* AI Suggestions */}
-        {data.suggestedFollowUps?.length > 0 && (
-          <div style={aiBox}>
-            <strong style={{ color: "#4b5563" }}>
-              AI Suggested Follow-ups:
-            </strong>
-
-            <ul style={aiList}>
-              {data.suggestedFollowUps.map((item: string, i: number) => (
-                <li key={i} style={aiItem}>
-                  + {item}
-                </li>
-              ))}
-            </ul>
           </div>
-        )}
+
+          {/* AI Suggested Follow-ups */}
+<div style={block}>
+  <label style={labelStyle}>
+    AI Suggested Follow-ups
+  </label>
+
+  <div style={{ marginTop: "2px" }}>
+    {data.suggestedFollowUps?.length > 0 ? (
+      data.suggestedFollowUps.map((item: string, i: number) => (
+        <div key={i} style={aiItem}>
+          + {item}
+        </div>
+      ))
+    ) : (
+      <div style={{ fontSize: "12px", color: "#9ca3af", fontStyle: "italic" }}>
+        No suggestions yet
+      </div>
+    )}
+  </div>
+</div>
+
       </div>
     </div>
   );
@@ -262,131 +262,170 @@ const InteractionForm = () => {
 
 export default InteractionForm;
 
-
-
-
-
 /* ================= STYLES ================= */
 
 const container: CSSProperties = {
   width: "65%",
+  maxWidth: "900px",
+  margin: "0 auto",
+  overflowY: "auto", 
   padding: "20px",
   background: "#f3f4f6",
-  height: "100vh",
-  overflowY: "auto",
+  minHeight: "100vh",
+  boxSizing: "border-box",
+  fontFamily: "system-ui, -apple-system, sans-serif",
 };
 
-const card = {
+const card: CSSProperties = {
   background: "#fff",
   padding: "20px",
-  borderRadius: "10px",
-  boxShadow: "0 0 6px rgba(0,0,0,0.05)",
+  borderRadius: "8px",
+  border: "1px solid #e5e7eb",
+  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+  boxSizing: "border-box",
 };
 
-const row = {
+const cardHeader: CSSProperties = {
+  borderBottom: "1px solid #e5e7eb",
+  paddingBottom: "10px",
+  marginBottom: "20px",
+};
+
+const row: CSSProperties = {
   display: "flex",
-  gap: "10px",
-  marginBottom: "10px",
+  gap: "20px",
+  marginBottom: "15px",
+  flexWrap: "wrap",
 };
 
-const block = {
-  marginBottom: "10px",
+const flexCol: CSSProperties = {
+  flex: 1,
+  minWidth: "220px",
+  display: "flex",
+  flexDirection: "column",
 };
 
-const inputStyle = {
+const block: CSSProperties = {
+  marginBottom: "20px",
   width: "100%",
-  padding: "8px",
+};
+
+const labelStyle: CSSProperties = {
+  fontSize: "13px",
+  fontWeight: 600,
+  color: "#374151",
+  marginBottom: "6px",
+  display: "block",
+};
+
+const inputStyle: CSSProperties = {
+  width: "100%",
+  padding: "10px 12px",
   borderRadius: "6px",
   border: "1px solid #d1d5db",
-  marginTop: "5px",
-  backgroundColor: "#f9fafb",
+  backgroundColor: "#fff",
+  boxSizing: "border-box",
+  fontSize: "14px",
+  outline: "none",
 };
 
-const textareaStyle = {
+const selectBorder: CSSProperties = {
+  width: "100%",
+  padding: "10px 12px",
+  borderRadius: "6px",
+  border: "1px solid #d1d5db",
+  backgroundColor: "#fff",
+  boxSizing: "border-box",
+  fontSize: "14px",
+  outline: "none",
+  cursor: "pointer",
+  color: "#1f2937",
+};
+
+const textareaStyle: CSSProperties = {
   ...inputStyle,
   minHeight: "80px",
+  resize: "vertical",
 };
 
-const micIcon = {
-  position: "absolute" as const,
-  right: "10px",
-  bottom: "38px",
+const micIcon: CSSProperties = {
+  position: "absolute",
+  right: "12px",
+  bottom: "12px",
   color: "#6b7280",
-};
-
-const clockIcon = {
-  position: "absolute" as const,
-  right: "10px",
-  top: "36px",
-  color: "#6b7280",
-};
-
-const voiceNote = {
-  fontSize: "13px",
-  color: "#6b7280",
-  display: "flex",
-  alignItems: "center",
-  gap: "6px",
-  marginTop: "6px",
   cursor: "pointer",
 };
 
-const box = {
-  border: "1px solid #e5e7eb",
-  padding: "10px",
+const voiceNote: CSSProperties = {
+  fontSize: "12px",
+  fontWeight: 600,
+  color: "#4b5563",
+  display: "inline-flex", 
+  alignItems: "center",
+  gap: "6px",
+  marginTop: "8px",
+  padding: "6px 10px",
+  backgroundColor: "#f3f4f6",
   borderRadius: "6px",
-  marginTop: "10px",
-  background: "#f9fafb",
+  cursor: "pointer",
 };
 
-const boxHeader = {
+const box: CSSProperties = {
+  border: "1px solid #e5e7eb",
+  padding: "15px",
+  borderRadius: "6px",
+  marginBottom: "20px",
+  background: "#fff",
+  boxSizing: "border-box",
+};
+
+const boxHeader: CSSProperties = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  marginBottom: "8px",
 };
 
-const iconBtn = {
+const iconBtn: CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: "5px",
   fontSize: "12px",
-  padding: "4px 8px",
+  fontWeight: 500,
+  padding: "6px 12px",
   border: "1px solid #d1d5db",
-  borderRadius: "6px",
+  borderRadius: "4px",
   background: "#fff",
   cursor: "pointer",
+  color: "#374151",
 };
 
-const mutedText = {
-  color: "#6b7280",
-  marginTop: "5px",
+const mutedText: CSSProperties = {
+  color: "#9ca3af",
+  fontSize: "13px",
+  margin: 0,
+  fontStyle: "italic",
 };
 
-const sentimentRow = {
+const sentimentRow: CSSProperties = {
   display: "flex",
-  gap: "20px",
-  marginTop: "8px",
+  gap: "24px",
+  marginTop: "4px",
+  flexWrap: "wrap",
 };
 
-const sentimentItem = {
+const sentimentItem: CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: "6px",
   cursor: "pointer",
+  fontSize: "14px",
 };
 
-const aiBox = {
-  marginTop: "15px",
-};
-
-const aiList = {
-  listStyle: "none",
-  padding: 0,
-  marginTop: "5px",
-};
-
-const aiItem = {
+const aiItem: CSSProperties = {
   color: "#2563eb",
-  marginBottom: "4px",
+  fontSize: "13px",
+  marginBottom: "2px",
   cursor: "pointer",
+  lineHeight: "1.4",
 };

@@ -9,7 +9,7 @@ from agent.agent import run_agent
 app = FastAPI()
 
 # Fetch the FRONTEND_URL from .env. 
-raw_origins = os.getenv("FRONTEND_URL", "http://localhost:5173")
+raw_origins = os.getenv("FRONTEND_URL")
 
 allowed_origins = [origin.strip() for origin in raw_origins.split(",")]
 

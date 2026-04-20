@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-// ✅ Added the missing fields to match the UI and AI tool outputs
 interface InteractionState {
   hcpName: string;
   interactionType: string;
@@ -12,10 +11,14 @@ interface InteractionState {
   materialsShared: string;
   samples: string;
   sentiment: string;
-  interestLevel: string;
   outcomes: string;
   followUp: string;
   suggestedFollowUps: string[];
+
+  // 🔥 AI flags
+  isAiSentiment: boolean;
+  insight: string;
+  isAiInsight: boolean;
 }
 
 export type StringInteractionField = {
@@ -34,46 +37,66 @@ const initialState: InteractionState = {
   materialsShared: "",
   samples: "",
   sentiment: "",
-  interestLevel: "",
   outcomes: "",
   followUp: "",
   suggestedFollowUps: [],
+  isAiSentiment: false,
+
+  // 🔥 NEW
+  insight: "",
+  isAiInsight: false,
 };
 
 const interactionSlice = createSlice({
   name: "interaction",
   initialState,
   reducers: {
-    // Single field update (manual/debug use)
     updateField: (
       state,
       action: PayloadAction<{ field: StringInteractionField; value: string }>
     ) => {
       state[action.payload.field] = action.payload.value;
+
+      if (action.payload.field === "sentiment") {
+        state.isAiSentiment = false;
+        state.isAiInsight = false; // 🔥 remove insight tag if user overrides
+      }
     },
 
-    // FULL overwrite (used for log_interaction)
     setAllFields: (
       _state,
       action: PayloadAction<Partial<InteractionState>>
     ) => {
-      return { ...initialState, ...action.payload };
+      return {
+        ...initialState,
+        ...action.payload,
+      };
     },
 
-    // 🔥 PARTIAL update (used for edit_interaction, summarize, sentiment, followup)
     updateFields: (
       state,
       action: PayloadAction<Partial<InteractionState>>
     ) => {
-      return { ...state, ...action.payload };
+      return {
+        ...state,
+        ...action.payload,
+      };
     },
 
-    // reset
+    setAiSentiment: (state, action: PayloadAction<boolean>) => {
+      state.isAiSentiment = action.payload;
+    },
+
     resetForm: () => initialState,
   },
 });
 
-export const { updateField, setAllFields, updateFields, resetForm } =
-  interactionSlice.actions;
+export const {
+  updateField,
+  setAllFields,
+  updateFields,
+  setAiSentiment,
+  resetForm,
+} = interactionSlice.actions;
 
 export default interactionSlice.reducer;

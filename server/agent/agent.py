@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import datetime
 
 # Load env
-load_dotenv()
+load_dotenv(".env.local")
 
 from groq import Groq
 from langgraph.graph import StateGraph
@@ -14,7 +14,8 @@ from agent.tools import TOOLS
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-# Define state
+
+# ---------------- STATE ----------------
 class AgentState(TypedDict):
     input: str
     parsed: dict
@@ -22,7 +23,7 @@ class AgentState(TypedDict):
     output: dict
 
 
-# 🔥 CLEAN FUNCTION (important for edit accuracy)
+# ---------------- CLEAN PARSED DATA ----------------
 def clean_parsed_data(parsed: dict):
     cleaned = {}
 
@@ -33,7 +34,7 @@ def clean_parsed_data(parsed: dict):
     return cleaned
 
 
-# STEP 1: Extract structured data
+# ---------------- STEP 1: EXTRACT ----------------
 def extract_node(state: AgentState):
     text = state.get("input", "")
 
@@ -47,28 +48,26 @@ STRICT RULES:
 - No markdown, no explanation
 - Do NOT include fields that are not mentioned
 - Do NOT return empty strings
+- Keep values concise and clean (no long paragraphs)
 
 FORMAT RULES:
-- Date must be in YYYY-MM-DD format
-- Time must be in HH:MM (24-hour format, zero-padded if needed)
-- Interaction Type must be EXACTLY one of:
+- Date must be YYYY-MM-DD
+- Time must be HH:MM (24-hour)
+- Interaction Type must be one of:
   Meeting, Phone Call, Report Show
-- Sentiment must be EXACTLY one of:
+- Sentiment must be one of:
   Positive, Neutral, Negative
 
 CONVERSIONS:
 - "today" → {current_date}
-- "yesterday" → calculate previous date
-- Convert all times to 24-hour format:
-  2:30 PM → 14:30
-  11:15 AM → 11:15
-  12:00 AM → 00:00
-  12:00 PM → 12:00
+- Convert time to 24-hour format
 
-EXTRACTION RULES:
-- Extract ONLY explicitly mentioned information
-- Normalize values to match required formats
-- If "face-to-face meeting" → Interaction Type = "Meeting"
+FOLLOW-UP RULE:
+- Keep followUp short (exact next step only)
+- Do NOT generate suggestions
+
+IMPORTANT:
+- Do NOT generate "suggestedFollowUps"
 
 Text: {text}
 
@@ -94,40 +93,53 @@ Text: {text}
 
     raw = response.choices[0].message.content.strip()
 
-    # Clean markdown if present
+    # ✅ Clean markdown
     if "```" in raw:
         raw = raw.replace("```json", "").replace("```", "").strip()
 
+    # ✅ Extract JSON safely
+    start = raw.find("{")
+    end = raw.rfind("}") + 1
+
+    if start != -1 and end != -1:
+        raw = raw[start:end]
+
     try:
         parsed = json.loads(raw)
-        parsed = clean_parsed_data(parsed)  # 🔥 KEY LINE
-    except:
+
+        if not isinstance(parsed, dict):
+            parsed = {}
+
+        parsed = clean_parsed_data(parsed)
+
+    except Exception as e:
+        print("JSON parse error:", e)
         parsed = {}
 
     state["parsed"] = parsed
     return state
 
 
-# STEP 2: Decide which tool to use (improved)
+# ---------------- STEP 2: DECIDE TOOL ----------------
 def decide_tool_node(state: AgentState):
     text = state.get("input", "")
 
     prompt = f"""
-    Decide which tool to use.
+Decide which tool to use.
 
-    Rules:
-    - If user is adding a new interaction → log_interaction
-    - If user is correcting/updating → edit_interaction
-    - If user asks summary → summarize
-    - If user asks about sentiment, interest, or analysis → analyze_interaction
-    - If user asks next steps → followup
+Rules:
+- New interaction → log_interaction
+- Correction/update → edit_interaction
+- Summary request → summarize
+- Sentiment/analysis → analyze_interaction
+- Follow-up suggestions → followup
 
-    Return ONLY one word:
+Return ONLY one word:
 
-    log_interaction | edit_interaction | summarize | analyze_interaction | followup
+log_interaction | edit_interaction | summarize | analyze_interaction | followup
 
-    Text: {text}
-    """
+Text: {text}
+"""
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
@@ -136,16 +148,22 @@ def decide_tool_node(state: AgentState):
 
     tool_name = response.choices[0].message.content.strip().lower()
 
-    allowed = ["log_interaction", "edit_interaction", "summarize", "analyze_interaction", "followup"]
+    allowed = [
+        "log_interaction",
+        "edit_interaction",
+        "summarize",
+        "analyze_interaction",
+        "followup",
+    ]
 
     if tool_name not in allowed:
-        tool_name = "log_interaction"
+        tool_name = "analyze_interaction"  # safer fallback
 
     state["tool"] = tool_name
     return state
 
 
-# STEP 3: Execute tool (fixed edit logic)
+# ---------------- STEP 3: TOOL EXECUTION ----------------
 def tool_node(state: AgentState):
     tool_name = state.get("tool", "log_interaction")
     parsed = state.get("parsed", {})
@@ -153,7 +171,7 @@ def tool_node(state: AgentState):
 
     tool_fn = TOOLS.get(tool_name, TOOLS["log_interaction"])
 
-    # EDIT → ONLY send changed fields
+    # EDIT → only changed fields
     if tool_name == "edit_interaction":
         result = {
             "tool": "edit_interaction",
@@ -161,7 +179,7 @@ def tool_node(state: AgentState):
         }
 
     # TEXT BASED TOOLS
-    elif tool_name in ["summarize", "sentiment", "followup"]:
+    elif tool_name in ["summarize", "analyze_interaction", "followup"]:
         result = tool_fn(text)
 
     # NORMAL LOG
@@ -172,7 +190,7 @@ def tool_node(state: AgentState):
     return state
 
 
-# Build LangGraph
+# ---------------- GRAPH ----------------
 builder = StateGraph(AgentState)
 
 builder.add_node("extract", extract_node)
@@ -187,7 +205,7 @@ builder.add_edge("decide_tool", "tool")
 graph = builder.compile()
 
 
-# Agent runner
+# ---------------- RUNNER ----------------
 def run_agent(text: str):
     result = graph.invoke({"input": text})
     print("FINAL RESULT:", result)
