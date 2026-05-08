@@ -48,7 +48,7 @@ STRICT RULES:
 - No markdown, no explanation
 - Do NOT include fields that are not mentioned
 - Do NOT return empty strings
-- Keep values concise and clean (no long paragraphs)
+- Keep values concise and clean
 
 FORMAT RULES:
 - Date must be YYYY-MM-DD
