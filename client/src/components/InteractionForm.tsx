@@ -1,8 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { CSSProperties, ChangeEvent } from "react";
+import type {
+  CSSProperties,
+  ChangeEvent,
+} from "react";
+
 import type { RootState } from "../redux/store";
-import { updateField } from "../redux/interactionSlice";
-import type { StringInteractionField } from "../redux/interactionSlice";
+
+import {
+  updateField,
+  type StringInteractionField,
+} from "../redux/interactionSlice";
 
 import {
   FiSearch,
@@ -12,18 +19,33 @@ import {
   FiMeh,
   FiFrown,
   FiStar,
+  FiCalendar,
+  FiClock,
+  FiUser,
 } from "react-icons/fi";
+
+import logo from "../assets/logo.png";
 
 const InteractionForm = () => {
   const dispatch = useDispatch();
-  const data = useSelector((state: RootState) => state.interaction);
+
+  const data = useSelector(
+    (state: RootState) => state.interaction
+  );
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLTextAreaElement |
+      HTMLSelectElement
+    >
   ) => {
     dispatch(
       updateField({
-        field: e.target.name as StringInteractionField,
+        field:
+          e.target
+            .name as StringInteractionField,
+
         value: e.target.value,
       })
     );
@@ -31,230 +53,422 @@ const InteractionForm = () => {
 
   return (
     <div style={container}>
-      <h2 style={{ marginBottom: "15px", color: "#1f2937" }}>Log HCP Interaction</h2>
+      {/* HEADER */}
+
+      <div style={topHeader}>
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "18px",
+    }}
+  >
+    {/* LOGO */}
+
+    <img
+      src={logo}
+      alt="DocAI Logo"
+      style={{
+        width: "130px",
+        height: "130px",
+        objectFit: "contain",
+
+        filter:
+          "drop-shadow(0 10px 20px rgba(37,99,235,0.18))",
+      }}
+    />
+
+    {/* TEXT */}
+
+    <div>
+      <h1 style={pageTitle}>
+        HCP Interaction Workspace
+      </h1>
+
+      <p style={pageSubTitle}>
+        AI-assisted doctor interaction
+        logging and CRM automation
+      </p>
+    </div>
+  </div>
+</div>
+
+      {/* MAIN CARD */}
 
       <div style={card}>
-        {/* Interaction Details Header with Line */}
-        <div style={cardHeader}>
-          <h4 style={{ margin: 0, color: "#1f2937" }}>Interaction Details</h4>
+        {/* SECTION HEADER */}
+
+        <div style={sectionHeader}>
+          <div>
+            <h2 style={sectionTitle}>
+              Interaction Details
+            </h2>
+
+            <p style={sectionDesc}>
+              Capture and manage HCP
+              interaction data efficiently
+            </p>
+          </div>
         </div>
 
-        {/* Row 1: Name & Type */}
+        {/* ROW 1 */}
+
         <div style={row}>
-          <div style={flexCol}>
-            <label style={labelStyle}>HCP Name</label>
-            <input
-              name="hcpName"
-              placeholder="Search or select HCP..."
-              value={data.hcpName || ""}
-              onChange={handleChange}
-              style={inputStyle}
-            />
+          <div style={field}>
+            <label style={label}>
+              HCP Name
+            </label>
+
+            <div style={inputWrapper}>
+              <FiUser style={leftIcon} />
+
+              <input
+                name="hcpName"
+                placeholder="Search or select HCP..."
+                value={data.hcpName || ""}
+                onChange={handleChange}
+                style={input}
+              />
+            </div>
           </div>
 
-          <div style={flexCol}>
-            <label style={labelStyle}>Interaction Type</label>
-            {/* Select-options with border */}
+          <div style={field}>
+            <label style={label}>
+              Interaction Type
+            </label>
+
             <select
               name="interactionType"
-              value={data.interactionType || ""}
-              style={selectBorder}
+              value={
+                data.interactionType || ""
+              }
+              style={select}
               onChange={handleChange}
             >
-              <option value="Meeting">Meeting</option>
-              <option value="Phone Call">Consult</option>
-              <option value="Report Show">Report Show</option>
+              <option value="Meeting">
+                Meeting
+              </option>
+
+              <option value="Phone Call">
+                Consult
+              </option>
+
+              <option value="Report Show">
+                Report Show
+              </option>
             </select>
           </div>
         </div>
 
-        {/* Row 2: Date & Time */}
+        {/* ROW 2 */}
+
         <div style={row}>
-          <div style={flexCol}>
-            <label style={labelStyle}>Date</label>
-            <input
-              type="date"
-              name="date"
-              value={data.date || ""}
-              onChange={handleChange}
-              style={inputStyle}
-            />
+          <div style={field}>
+            <label style={label}>
+              Date
+            </label>
+
+            <div style={inputWrapper}>
+              <FiCalendar style={leftIcon} />
+
+              <input
+                type="date"
+                name="date"
+                value={data.date || ""}
+                onChange={handleChange}
+                style={input}
+              />
+            </div>
           </div>
 
-          <div style={flexCol}>
-            <label style={labelStyle}>Time</label>
-            <input
-              type="time"
-              name="time"
-              value={data.time || ""}
-              onChange={handleChange}
-              style={inputStyle}
-            />
+          <div style={field}>
+            <label style={label}>
+              Time
+            </label>
+
+            <div style={inputWrapper}>
+              <FiClock style={leftIcon} />
+
+              <input
+                type="time"
+                name="time"
+                value={data.time || ""}
+                onChange={handleChange}
+                style={input}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Attendees */}
+        {/* ATTENDEES */}
+
         <div style={block}>
-          <label style={labelStyle}>Attendees</label>
+          <label style={label}>
+            Attendees
+          </label>
+
           <input
             name="attendees"
-            placeholder="Enter names or search..."
+            placeholder="Enter attendee names..."
             value={data.attendees || ""}
             onChange={handleChange}
-            style={inputStyle}
+            style={input}
           />
         </div>
 
-        {/* Topics */}
+        {/* TOPICS */}
+
         <div style={block}>
-          <label style={labelStyle}>Topics Discussed</label>
-          <div style={{ position: "relative", width: "100%" }}>
+          <div style={labelRow}>
+            <label style={label}>
+              Topics Discussed
+            </label>
+
+            <div style={aiBadge}>
+              <FiStar size={12} />
+              AI Enabled
+            </div>
+          </div>
+
+          <div style={{ position: "relative" }}>
             <textarea
               name="topics"
-              placeholder="Enter key discussion points..."
+              placeholder="Describe discussion points, concerns, feedback, and product conversations..."
               value={data.topics || ""}
               onChange={handleChange}
-              style={{ ...textareaStyle, paddingRight: "35px" }}
+              style={textarea}
             />
+
             <FiMic style={micIcon} />
           </div>
 
           <div style={voiceNote}>
-            <FiStar style={{ color: "#4b5563" }} />
-            Summarize from Voice Note (Requires Consent)
+            <FiStar />
+            Summarize from voice note
           </div>
         </div>
 
-        {/* Materials Shared */}
-        <div style={box}>
-          <div style={boxHeader}>
-            <span style={labelStyle}>Materials Shared</span>
-            <button style={iconBtn}>
-              <FiSearch /> Search/Add
+        {/* MATERIALS */}
+
+        <div style={infoCard}>
+          <div style={infoCardHeader}>
+            <div>
+              <h4 style={infoCardTitle}>
+                Materials Shared
+              </h4>
+
+              <p style={infoCardSub}>
+                PDFs, brochures, reports,
+                presentations
+              </p>
+            </div>
+
+            <button style={actionBtn}>
+              <FiSearch />
+              Search/Add
             </button>
           </div>
-          <p style={mutedText}>
-            {data.materialsShared || "No materials added."}
+
+          <p style={placeholderText}>
+            {data.materialsShared ||
+              "No materials added yet"}
           </p>
         </div>
 
-        {/* Samples Distributed */}
-        <div style={box}>
-          <div style={boxHeader}>
-            <span style={labelStyle}>Samples Distributed</span>
-            <button style={iconBtn}>
-              <FiPlus /> Add Sample
+        {/* SAMPLES */}
+
+        <div style={infoCard}>
+          <div style={infoCardHeader}>
+            <div>
+              <h4 style={infoCardTitle}>
+                Samples Distributed
+              </h4>
+
+              <p style={infoCardSub}>
+                Track products and sample
+                distribution
+              </p>
+            </div>
+
+            <button style={actionBtn}>
+              <FiPlus />
+              Add Sample
             </button>
           </div>
-          <p style={mutedText}>
-            {data.samples || "No samples added."}
+
+          <p style={placeholderText}>
+            {data.samples ||
+              "No samples added yet"}
           </p>
         </div>
 
-        {/* Sentiment */}
-<div style={block}>
-  {/* Label + AI Tag */}
-  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-    <label style={labelStyle}>
-      Observed/Inferred HCP Sentiment
-    </label>
+        {/* SENTIMENT */}
 
-    {data.isAiInsight && data.insight &&(
-      <div
-    style={{
-      fontSize: "13px",
-      color: "#374151",
-      marginTop: "6px",
-      padding: "6px 10px",
-      background: "#f3f4f6",
-      borderRadius: "6px",
-    }}
-  >
-    {data.insight}
-  </div>
-    )}
-  </div>
-
-  {/* Options */}
-  <div style={sentimentRow}>
-    {[
-      { label: "Positive", icon: <FiSmile />, color: "#16a34a" },
-      { label: "Neutral", icon: <FiMeh />, color: "#3b82f6" },
-      { label: "Negative", icon: <FiFrown />, color: "#dc2626" },
-    ].map((item) => (
-      <label
-        key={item.label}
-        style={{ ...sentimentItem, color: "#4b5563" }}
-      >
-        <input
-          type="radio"
-          name="sentiment"
-          value={item.label}
-          checked={data.sentiment === item.label}
-          onChange={handleChange}
-        />
-
-        <span
-          style={{
-            color: item.color,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          {item.icon}
-        </span>
-
-        {item.label}
-      </label>
-    ))}
-  </div>
-</div>
-
-        {/* Outcomes */}
         <div style={block}>
-          <label style={labelStyle}>Outcomes</label>
+          <div style={labelRow}>
+            <label style={label}>
+              HCP Sentiment Analysis
+            </label>
+
+            {data.isAiSentiment && (
+              <div style={aiAnalysisBadge}>
+                AI Generated
+              </div>
+            )}
+          </div>
+
+          {/* AI Insight */}
+
+          {data.isAiInsight &&
+            data.insight && (
+              <div style={insightCard}>
+                <div style={insightTitle}>
+                  <FiStar />
+                  AI Insight
+                </div>
+
+                <p style={insightText}>
+                  {data.insight}
+                </p>
+              </div>
+            )}
+
+          {/* Sentiment Options */}
+
+          <div style={sentimentGrid}>
+            {[
+              {
+                label: "Positive",
+                icon: <FiSmile />,
+                color: "#16a34a",
+              },
+
+              {
+                label: "Neutral",
+                icon: <FiMeh />,
+                color: "#2563eb",
+              },
+
+              {
+                label: "Negative",
+                icon: <FiFrown />,
+                color: "#dc2626",
+              },
+            ].map((item) => (
+              <label
+                key={item.label}
+                style={{
+                  ...sentimentCard,
+
+                  border:
+                    data.sentiment ===
+                    item.label
+                      ? `2px solid ${item.color}`
+                      : "1px solid #e5e7eb",
+                }}
+              >
+                <input
+                  type="radio"
+                  name="sentiment"
+                  value={item.label}
+                  checked={
+                    data.sentiment ===
+                    item.label
+                  }
+                  onChange={handleChange}
+                />
+
+                <div
+                  style={{
+                    ...sentimentIcon,
+                    color: item.color,
+                  }}
+                >
+                  {item.icon}
+                </div>
+
+                <span>
+                  {item.label}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* OUTCOMES */}
+
+        <div style={block}>
+          <label style={label}>
+            Outcomes
+          </label>
+
           <textarea
             name="outcomes"
-            placeholder="Key outcomes or agreements..."
+            placeholder="Capture key decisions, commitments, and business outcomes..."
             value={data.outcomes || ""}
             onChange={handleChange}
-            style={textareaStyle}
+            style={textarea}
           />
         </div>
 
-        {/* Follow up */}
+        {/* FOLLOW UP */}
+
         <div style={block}>
-          <label style={labelStyle}>Follow-up Actions</label>
+          <label style={label}>
+            Follow-up Actions
+          </label>
+
           <textarea
             name="followUp"
-            placeholder="Enter next steps or tasks..."
+            placeholder="Next steps, tasks, reminders, or scheduling actions..."
             value={data.followUp || ""}
             onChange={handleChange}
-            style={{...textareaStyle, marginBottom: "8px"}}
+            style={textarea}
           />
+        </div>
+
+        {/* AI FOLLOW UPS */}
+
+        <div style={followupCard}>
+          <div style={labelRow}>
+            <label style={label}>
+              AI Suggested Follow-ups
+            </label>
+
+            <div style={aiBadge}>
+              Smart Suggestions
+            </div>
           </div>
 
-          {/* AI Suggested Follow-ups */}
-<div style={block}>
-  <label style={labelStyle}>
-    AI Suggested Follow-ups
-  </label>
+          <div style={{ marginTop: 12 }}>
+            {data.suggestedFollowUps
+              ?.length > 0 ? (
+              data.suggestedFollowUps.map(
+                (
+                  item: string,
+                  i: number
+                ) => (
+                  <div
+                    key={i}
+                    style={followupItem}
+                  >
+                    <div
+                      style={
+                        followupDot
+                      }
+                    />
 
-  <div style={{ marginTop: "2px" }}>
-    {data.suggestedFollowUps?.length > 0 ? (
-      data.suggestedFollowUps.map((item: string, i: number) => (
-        <div key={i} style={aiItem}>
-          + {item}
+                    {item}
+                  </div>
+                )
+              )
+            ) : (
+              <div style={emptyState}>
+                No AI suggestions available
+              </div>
+            )}
+          </div>
         </div>
-      ))
-    ) : (
-      <div style={{ fontSize: "12px", color: "#9ca3af", fontStyle: "italic" }}>
-        No suggestions yet
-      </div>
-    )}
-  </div>
-</div>
-
       </div>
     </div>
   );
@@ -262,170 +476,313 @@ const InteractionForm = () => {
 
 export default InteractionForm;
 
-/* ================= STYLES ================= */
+/* ===================== STYLES ===================== */
 
 const container: CSSProperties = {
-  width: "65%",
-  maxWidth: "900px",
-  margin: "0 auto",
-  overflowY: "auto", 
-  padding: "20px",
-  background: "#f3f4f6",
+  width: "62%",
   minHeight: "100vh",
+  overflowY: "auto",
+  padding: "32px",
+  background:
+    "linear-gradient(to bottom,#f8fafc,#eef2ff)",
   boxSizing: "border-box",
-  fontFamily: "system-ui, -apple-system, sans-serif",
+  fontFamily:
+    "Inter, system-ui, sans-serif",
+};
+
+const topHeader: CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "28px",
+};
+
+const pageTitle: CSSProperties = {
+  margin: 0,
+  fontSize: "30px",
+  fontWeight: 700,
+  color: "#111827",
+};
+
+const pageSubTitle: CSSProperties = {
+  marginTop: "8px",
+  color: "#6b7280",
+  fontSize: "14px",
 };
 
 const card: CSSProperties = {
-  background: "#fff",
-  padding: "20px",
-  borderRadius: "8px",
+  background: "rgba(255,255,255,0.8)",
+  borderRadius: "24px",
+  padding: "32px",
   border: "1px solid #e5e7eb",
-  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-  boxSizing: "border-box",
+  backdropFilter: "blur(12px)",
+  boxShadow:
+    "0 20px 60px rgba(15,23,42,0.08)",
 };
 
-const cardHeader: CSSProperties = {
-  borderBottom: "1px solid #e5e7eb",
-  paddingBottom: "10px",
-  marginBottom: "20px",
+const sectionHeader: CSSProperties = {
+  marginBottom: "28px",
+};
+
+const sectionTitle: CSSProperties = {
+  margin: 0,
+  fontSize: "22px",
+  fontWeight: 700,
+  color: "#111827",
+};
+
+const sectionDesc: CSSProperties = {
+  marginTop: "8px",
+  color: "#6b7280",
+  fontSize: "14px",
 };
 
 const row: CSSProperties = {
   display: "flex",
   gap: "20px",
-  marginBottom: "15px",
+  marginBottom: "24px",
   flexWrap: "wrap",
 };
 
-const flexCol: CSSProperties = {
+const field: CSSProperties = {
   flex: 1,
-  minWidth: "220px",
-  display: "flex",
-  flexDirection: "column",
+  minWidth: "240px",
 };
 
 const block: CSSProperties = {
-  marginBottom: "20px",
-  width: "100%",
+  marginBottom: "28px",
 };
 
-const labelStyle: CSSProperties = {
-  fontSize: "13px",
-  fontWeight: 600,
-  color: "#374151",
-  marginBottom: "6px",
+const label: CSSProperties = {
   display: "block",
+  marginBottom: "10px",
+  fontSize: "13px",
+  fontWeight: 700,
+  color: "#374151",
 };
 
-const inputStyle: CSSProperties = {
+const labelRow: CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "10px",
+};
+
+const inputWrapper: CSSProperties = {
+  position: "relative",
+};
+
+const leftIcon: CSSProperties = {
+  position: "absolute",
+  left: "14px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  color: "#9ca3af",
+};
+
+const input: CSSProperties = {
   width: "100%",
-  padding: "10px 12px",
-  borderRadius: "6px",
-  border: "1px solid #d1d5db",
-  backgroundColor: "#fff",
-  boxSizing: "border-box",
+  padding: "14px 16px 14px 42px",
+  borderRadius: "14px",
+  border: "1px solid #dbe3ee",
+  background: "#fff",
   fontSize: "14px",
   outline: "none",
+  boxSizing: "border-box",
 };
 
-const selectBorder: CSSProperties = {
+const select: CSSProperties = {
   width: "100%",
-  padding: "10px 12px",
-  borderRadius: "6px",
-  border: "1px solid #d1d5db",
-  backgroundColor: "#fff",
-  boxSizing: "border-box",
+  padding: "14px 16px",
+  borderRadius: "14px",
+  border: "1px solid #dbe3ee",
+  background: "#fff",
   fontSize: "14px",
   outline: "none",
   cursor: "pointer",
-  color: "#1f2937",
 };
 
-const textareaStyle: CSSProperties = {
-  ...inputStyle,
-  minHeight: "80px",
+const textarea: CSSProperties = {
+  width: "100%",
+  minHeight: "120px",
+  padding: "16px",
+  borderRadius: "16px",
+  border: "1px solid #dbe3ee",
+  background: "#fff",
+  fontSize: "14px",
   resize: "vertical",
+  outline: "none",
+  boxSizing: "border-box",
+  lineHeight: 1.7,
 };
 
 const micIcon: CSSProperties = {
   position: "absolute",
-  right: "12px",
-  bottom: "12px",
+  right: "18px",
+  bottom: "18px",
   color: "#6b7280",
   cursor: "pointer",
 };
 
-const voiceNote: CSSProperties = {
-  fontSize: "12px",
-  fontWeight: 600,
-  color: "#4b5563",
-  display: "inline-flex", 
+const aiBadge: CSSProperties = {
+  display: "flex",
   alignItems: "center",
   gap: "6px",
-  marginTop: "8px",
-  padding: "6px 10px",
-  backgroundColor: "#f3f4f6",
-  borderRadius: "6px",
+  padding: "6px 12px",
+  borderRadius: "999px",
+  background: "#eef2ff",
+  color: "#4338ca",
+  fontSize: "12px",
+  fontWeight: 600,
+};
+
+const voiceNote: CSSProperties = {
+  marginTop: "12px",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "8px",
+  padding: "10px 14px",
+  borderRadius: "12px",
+  background: "#f8fafc",
+  color: "#374151",
+  fontSize: "13px",
+  fontWeight: 600,
   cursor: "pointer",
 };
 
-const box: CSSProperties = {
+const infoCard: CSSProperties = {
   border: "1px solid #e5e7eb",
-  padding: "15px",
-  borderRadius: "6px",
-  marginBottom: "20px",
+  borderRadius: "18px",
+  padding: "20px",
+  marginBottom: "24px",
   background: "#fff",
-  boxSizing: "border-box",
 };
 
-const boxHeader: CSSProperties = {
+const infoCardHeader: CSSProperties = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  marginBottom: "8px",
+  marginBottom: "14px",
 };
 
-const iconBtn: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "5px",
-  fontSize: "12px",
-  fontWeight: 500,
-  padding: "6px 12px",
-  border: "1px solid #d1d5db",
-  borderRadius: "4px",
-  background: "#fff",
-  cursor: "pointer",
-  color: "#374151",
-};
-
-const mutedText: CSSProperties = {
-  color: "#9ca3af",
-  fontSize: "13px",
+const infoCardTitle: CSSProperties = {
   margin: 0,
-  fontStyle: "italic",
+  fontSize: "16px",
+  fontWeight: 700,
+  color: "#111827",
 };
 
-const sentimentRow: CSSProperties = {
-  display: "flex",
-  gap: "24px",
+const infoCardSub: CSSProperties = {
   marginTop: "4px",
-  flexWrap: "wrap",
+  color: "#6b7280",
+  fontSize: "13px",
 };
 
-const sentimentItem: CSSProperties = {
+const actionBtn: CSSProperties = {
   display: "flex",
   alignItems: "center",
-  gap: "6px",
+  gap: "8px",
+  border: "none",
+  borderRadius: "12px",
+  padding: "10px 14px",
+  background:
+    "linear-gradient(135deg,#eff6ff,#eef2ff)",
+  color: "#2563eb",
+  fontWeight: 600,
   cursor: "pointer",
+};
+
+const placeholderText: CSSProperties = {
+  color: "#9ca3af",
+  fontStyle: "italic",
   fontSize: "14px",
 };
 
-const aiItem: CSSProperties = {
-  color: "#2563eb",
-  fontSize: "13px",
-  marginBottom: "2px",
+const aiAnalysisBadge: CSSProperties = {
+  padding: "6px 10px",
+  borderRadius: "999px",
+  background: "#dcfce7",
+  color: "#166534",
+  fontSize: "12px",
+  fontWeight: 700,
+};
+
+const insightCard: CSSProperties = {
+  marginBottom: "18px",
+  padding: "18px",
+  borderRadius: "18px",
+  background:
+    "linear-gradient(135deg,#eff6ff,#f5f3ff)",
+  border: "1px solid #dbeafe",
+};
+
+const insightTitle: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  fontWeight: 700,
+  color: "#4338ca",
+  marginBottom: "10px",
+};
+
+const insightText: CSSProperties = {
+  margin: 0,
+  color: "#374151",
+  lineHeight: 1.7,
+  fontSize: "14px",
+};
+
+const sentimentGrid: CSSProperties = {
+  display: "flex",
+  gap: "16px",
+  flexWrap: "wrap",
+};
+
+const sentimentCard: CSSProperties = {
+  flex: 1,
+  minWidth: "140px",
+  padding: "18px",
+  borderRadius: "18px",
+  background: "#fff",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "10px",
   cursor: "pointer",
-  lineHeight: "1.4",
+  transition: "0.2s",
+};
+
+const sentimentIcon: CSSProperties = {
+  fontSize: "24px",
+};
+
+const followupCard: CSSProperties = {
+  borderRadius: "22px",
+  padding: "24px",
+  background:
+    "linear-gradient(to bottom,#ffffff,#f8fafc)",
+  border: "1px solid #e5e7eb",
+};
+
+const followupItem: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+  padding: "14px 0",
+  borderBottom: "1px solid #f1f5f9",
+  color: "#374151",
+  fontSize: "14px",
+};
+
+const followupDot: CSSProperties = {
+  width: "8px",
+  height: "8px",
+  borderRadius: "999px",
+  background: "#2563eb",
+};
+
+const emptyState: CSSProperties = {
+  color: "#9ca3af",
+  fontStyle: "italic",
+  fontSize: "14px",
 };
