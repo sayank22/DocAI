@@ -1,16 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import type {
-  CSSProperties,
-  ChangeEvent,
-} from "react";
+import type { ChangeEvent } from "react";
 
 import type { RootState } from "../redux/store";
-
 import {
   updateField,
   type StringInteractionField,
 } from "../redux/interactionSlice";
-
 import {
   FiSearch,
   FiMic,
@@ -22,188 +17,131 @@ import {
   FiCalendar,
   FiClock,
   FiUser,
+  FiZap,
 } from "react-icons/fi";
 
-import logo from "../assets/logo.png";
+// import logo from "../assets/logo.png";
+
+const sentimentOptions = [
+  { label: "Positive", icon: <FiSmile />, color: "text-emerald-600" },
+  { label: "Neutral", icon: <FiMeh />, color: "text-blue-600" },
+  { label: "Negative", icon: <FiFrown />, color: "text-red-600" },
+];
 
 const InteractionForm = () => {
   const dispatch = useDispatch();
-
-  const data = useSelector(
-    (state: RootState) => state.interaction
-  );
+  const data = useSelector((state: RootState) => state.interaction);
 
   const handleChange = (
-    e: ChangeEvent<
-      HTMLInputElement |
-      HTMLTextAreaElement |
-      HTMLSelectElement
-    >
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     dispatch(
       updateField({
-        field:
-          e.target
-            .name as StringInteractionField,
-
+        field: e.target.name as StringInteractionField,
         value: e.target.value,
       })
     );
   };
 
   return (
-    <div style={container}>
-      {/* HEADER */}
+    <div className="box-border min-h-screen w-[62%] overflow-y-auto bg-[radial-gradient(circle_at_top,_rgba(191,219,254,0.4),_transparent_48%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_100%)] p-8 font-sans">
+      <div className="mb-7 flex items-center gap-[18px]">
+        {/* <img
+          src={logo}
+          alt="DocAI Logo"
+          className="h-[130px] w-[130px] object-contain drop-shadow-[0_10px_20px_rgba(37,99,235,0.18)]"
+        /> */}
 
-      <div style={topHeader}>
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "18px",
-    }}
-  >
-    {/* LOGO */}
+        <div>
+          <h1 className="m-0 text-[30px] font-bold text-slate-900">Log HCP Interaction</h1>
+          <p className="mt-2 text-[14px] text-slate-500">
+            AI-assisted doctor interaction logging and CRM automation
+          </p>
+        </div>
+      </div>
 
-    <img
-      src={logo}
-      alt="DocAI Logo"
-      style={{
-        width: "130px",
-        height: "130px",
-        objectFit: "contain",
-
-        filter:
-          "drop-shadow(0 10px 20px rgba(37,99,235,0.18))",
-      }}
-    />
-
-    {/* TEXT */}
-
-    <div>
-      <h1 style={pageTitle}>
-        HCP Interaction Workspace
-      </h1>
-
-      <p style={pageSubTitle}>
-        AI-assisted doctor interaction
-        logging and CRM automation
-      </p>
-    </div>
-  </div>
-</div>
-
-      {/* MAIN CARD */}
-
-      <div style={card}>
-        {/* SECTION HEADER */}
-
-        <div style={sectionHeader}>
-          <div>
-            <h2 style={sectionTitle}>
-              Interaction Details
-            </h2>
-
-            <p style={sectionDesc}>
-              Capture and manage HCP
-              interaction data efficiently
-            </p>
-          </div>
+      <div className="rounded-[24px] border border-slate-200/80 bg-white/80 p-8 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+        <div className="mb-7">
+          <h2 className="m-0 text-[22px] font-bold text-slate-900">Interaction Details</h2>
+          <p className="mt-2 text-[14px] text-slate-500">
+            Capture and manage HCP interaction data efficiently
+          </p>
         </div>
 
-        {/* ROW 1 */}
-
-        <div style={row}>
-          <div style={field}>
-            <label style={label}>
+        <div className="mb-6 flex flex-wrap gap-5">
+          <div className="min-w-[240px] flex-1">
+            <label className="mb-2.5 block text-[13px] font-bold text-slate-700">
               HCP Name
             </label>
 
-            <div style={inputWrapper}>
-              <FiUser style={leftIcon} />
-
+            <div className="relative">
+              <FiUser className="pointer-events-none absolute left-[14px] top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 name="hcpName"
                 placeholder="Search or select HCP..."
                 value={data.hcpName || ""}
                 onChange={handleChange}
-                style={input}
+                className="w-full rounded-[14px] border border-slate-200 bg-white py-[14px] pl-[42px] pr-[16px] text-[14px] text-slate-700 outline-none shadow-sm"
               />
             </div>
           </div>
 
-          <div style={field}>
-            <label style={label}>
+          <div className="min-w-[240px] flex-1">
+            <label className="mb-2.5 block text-[13px] font-bold text-slate-700">
               Interaction Type
             </label>
 
             <select
               name="interactionType"
-              value={
-                data.interactionType || ""
-              }
-              style={select}
+              value={data.interactionType || ""}
               onChange={handleChange}
+              className="w-full cursor-pointer rounded-[14px] border border-slate-200 bg-white px-[16px] py-[14px] text-[14px] text-slate-700 outline-none shadow-sm"
             >
-              <option value="Meeting">
-                Meeting
-              </option>
-
-              <option value="Phone Call">
-                Consult
-              </option>
-
-              <option value="Report Show">
-                Report Show
-              </option>
+              <option value="Meeting">Meeting</option>
+              <option value="Phone Call">Consult</option>
+              <option value="Report Show">Report Show</option>
             </select>
           </div>
         </div>
 
-        {/* ROW 2 */}
-
-        <div style={row}>
-          <div style={field}>
-            <label style={label}>
+        <div className="mb-6 flex flex-wrap gap-5">
+          <div className="min-w-[240px] flex-1">
+            <label className="mb-2.5 block text-[13px] font-bold text-slate-700">
               Date
             </label>
 
-            <div style={inputWrapper}>
-              <FiCalendar style={leftIcon} />
-
+            <div className="relative">
+              <FiCalendar className="pointer-events-none absolute left-[14px] top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="date"
                 name="date"
                 value={data.date || ""}
                 onChange={handleChange}
-                style={input}
+                className="w-full rounded-[14px] border border-slate-200 bg-white py-[14px] pl-[42px] pr-[16px] text-[14px] text-slate-700 outline-none shadow-sm"
               />
             </div>
           </div>
 
-          <div style={field}>
-            <label style={label}>
+          <div className="min-w-[240px] flex-1">
+            <label className="mb-2.5 block text-[13px] font-bold text-slate-700">
               Time
             </label>
 
-            <div style={inputWrapper}>
-              <FiClock style={leftIcon} />
-
+            <div className="relative">
+              <FiClock className="pointer-events-none absolute left-[14px] top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="time"
                 name="time"
                 value={data.time || ""}
                 onChange={handleChange}
-                style={input}
+                className="w-full rounded-[14px] border border-slate-200 bg-white py-[14px] pl-[42px] pr-[16px] text-[14px] text-slate-700 outline-none shadow-sm"
               />
             </div>
           </div>
         </div>
 
-        {/* ATTENDEES */}
-
-        <div style={block}>
-          <label style={label}>
+        <div className="mb-7">
+          <label className="mb-2.5 block text-[13px] font-bold text-slate-700">
             Attendees
           </label>
 
@@ -212,260 +150,167 @@ const InteractionForm = () => {
             placeholder="Enter attendee names..."
             value={data.attendees || ""}
             onChange={handleChange}
-            style={input}
+            className="w-full rounded-[14px] border border-slate-200 bg-white px-[16px] py-[14px] text-[14px] text-slate-700 outline-none shadow-sm"
           />
         </div>
 
-        {/* TOPICS */}
-
-        <div style={block}>
-          <div style={labelRow}>
-            <label style={label}>
-              Topics Discussed
-            </label>
-
-            <div style={aiBadge}>
+        <div className="mb-7">
+          <div className="mb-2.5 flex items-center justify-between">
+            <label className="text-[13px] font-bold text-slate-700">Topics Discussed</label>
+            <div className="inline-flex items-center gap-[6px] rounded-full bg-indigo-50 px-[12px] py-[6px] text-[12px] font-semibold text-indigo-700">
               <FiStar size={12} />
               AI Enabled
             </div>
           </div>
 
-          <div style={{ position: "relative" }}>
+          <div className="relative">
             <textarea
               name="topics"
               placeholder="Describe discussion points, concerns, feedback, and product conversations..."
               value={data.topics || ""}
               onChange={handleChange}
-              style={textarea}
+              className="min-h-[120px] w-full resize-y rounded-[16px] border border-slate-200 bg-white px-[16px] py-[16px] pr-[48px] text-[14px] leading-7 text-slate-700 outline-none shadow-sm"
             />
-
-            <FiMic style={micIcon} />
+            <FiMic className="absolute bottom-[18px] right-[18px] cursor-pointer text-slate-500" />
           </div>
 
-          <div style={voiceNote}>
-            <FiStar />
-            Summarize from voice note
+          <div className="mt-3 inline-flex items-center gap-2 rounded-[12px] border border-slate-200 bg-slate-50 px-[14px] py-[10px] text-[13px] font-semibold text-slate-600">
+            <FiStar /> Summarize from voice note
           </div>
         </div>
 
-        {/* MATERIALS */}
-
-        <div style={infoCard}>
-          <div style={infoCardHeader}>
+        <div className="mb-6 rounded-[18px] border border-slate-200 bg-white p-5">
+          <div className="mb-3.5 flex items-center justify-between">
             <div>
-              <h4 style={infoCardTitle}>
-                Materials Shared
-              </h4>
-
-              <p style={infoCardSub}>
-                PDFs, brochures, reports,
-                presentations
+              <h4 className="m-0 text-[16px] font-bold text-slate-900">Materials Shared</h4>
+              <p className="mt-1 text-[13px] text-slate-500">
+                PDFs, brochures, reports, presentations
               </p>
             </div>
 
-            <button style={actionBtn}>
-              <FiSearch />
-              Search/Add
+            <button className="inline-flex items-center gap-2 rounded-[12px] bg-blue-50 px-[14px] py-[10px] font-semibold text-blue-700">
+              <FiSearch /> Search/Add
             </button>
           </div>
 
-          <p style={placeholderText}>
-            {data.materialsShared ||
-              "No materials added yet"}
+          <p className="text-[14px] italic text-slate-400">
+            {data.materialsShared || "No materials added yet"}
           </p>
         </div>
 
-        {/* SAMPLES */}
-
-        <div style={infoCard}>
-          <div style={infoCardHeader}>
+        <div className="mb-6 rounded-[18px] border border-slate-200 bg-white p-5">
+          <div className="mb-3.5 flex items-center justify-between">
             <div>
-              <h4 style={infoCardTitle}>
-                Samples Distributed
-              </h4>
-
-              <p style={infoCardSub}>
-                Track products and sample
-                distribution
+              <h4 className="m-0 text-[16px] font-bold text-slate-900">Samples Distributed</h4>
+              <p className="mt-1 text-[13px] text-slate-500">
+                Track products and sample distribution
               </p>
             </div>
 
-            <button style={actionBtn}>
-              <FiPlus />
-              Add Sample
+            <button className="inline-flex items-center gap-2 rounded-[12px] bg-blue-50 px-[14px] py-[10px] font-semibold text-blue-700">
+              <FiPlus /> Add Sample
             </button>
           </div>
 
-          <p style={placeholderText}>
-            {data.samples ||
-              "No samples added yet"}
+          <p className="text-[14px] italic text-slate-400">
+            {data.samples || "No samples added yet"}
           </p>
         </div>
 
-        {/* SENTIMENT */}
-
-        <div style={block}>
-          <div style={labelRow}>
-            <label style={label}>
+        <div className="mb-7">
+          <div className="mb-2.5 flex items-center justify-between">
+            <label className="text-[13px] font-bold text-slate-700">
               HCP Sentiment Analysis
             </label>
 
             {data.isAiSentiment && (
-              <div style={aiAnalysisBadge}>
+              <div className="rounded-full bg-emerald-100 px-[10px] py-[6px] text-[12px] font-bold text-emerald-700">
                 AI Generated
               </div>
             )}
           </div>
 
-          {/* AI Insight */}
-
-          {data.isAiInsight &&
-            data.insight && (
-              <div style={insightCard}>
-                <div style={insightTitle}>
-                  <FiStar />
-                  AI Insight
-                </div>
-
-                <p style={insightText}>
-                  {data.insight}
-                </p>
+          {data.isAiInsight && data.insight && (
+            <div className="mb-4 rounded-[18px] border border-blue-200 bg-gradient-to-r from-blue-50 to-violet-50 p-[18px]">
+              <div className="mb-2.5 flex items-center gap-2 font-bold text-indigo-700">
+                <FiStar /> AI Insight
               </div>
-            )}
+              <p className="m-0 text-[14px] leading-7 text-slate-600">{data.insight}</p>
+            </div>
+          )}
 
-          {/* Sentiment Options */}
+          <div className="flex flex-wrap gap-4">
+            {sentimentOptions.map((item) => {
+              const isSelected = data.sentiment === item.label;
 
-          <div style={sentimentGrid}>
-            {[
-              {
-                label: "Positive",
-                icon: <FiSmile />,
-                color: "#16a34a",
-              },
-
-              {
-                label: "Neutral",
-                icon: <FiMeh />,
-                color: "#2563eb",
-              },
-
-              {
-                label: "Negative",
-                icon: <FiFrown />,
-                color: "#dc2626",
-              },
-            ].map((item) => (
-              <label
-                key={item.label}
-                style={{
-                  ...sentimentCard,
-
-                  border:
-                    data.sentiment ===
-                    item.label
-                      ? `2px solid ${item.color}`
-                      : "1px solid #e5e7eb",
-                }}
-              >
-                <input
-                  type="radio"
-                  name="sentiment"
-                  value={item.label}
-                  checked={
-                    data.sentiment ===
-                    item.label
-                  }
-                  onChange={handleChange}
-                />
-
-                <div
-                  style={{
-                    ...sentimentIcon,
-                    color: item.color,
-                  }}
+              return (
+                <label
+                  key={item.label}
+                  className={`flex min-w-[140px] flex-1 cursor-pointer flex-col items-center gap-[10px] rounded-[18px] border px-[18px] py-[18px] text-sm font-semibold text-slate-700 transition ${
+                    isSelected
+                      ? "border-blue-500 bg-blue-50 shadow-sm"
+                      : "border-slate-200 bg-white"
+                  }`}
                 >
-                  {item.icon}
-                </div>
-
-                <span>
-                  {item.label}
-                </span>
-              </label>
-            ))}
+                  <input
+                    type="radio"
+                    name="sentiment"
+                    value={item.label}
+                    checked={isSelected}
+                    onChange={handleChange}
+                    className="sr-only"
+                  />
+                  <div className={`text-[24px] ${item.color}`}>{item.icon}</div>
+                  <span>{item.label}</span>
+                </label>
+              );
+            })}
           </div>
         </div>
 
-        {/* OUTCOMES */}
-
-        <div style={block}>
-          <label style={label}>
-            Outcomes
-          </label>
-
+        <div className="mb-7">
+          <label className="mb-2.5 block text-[13px] font-bold text-slate-700">Outcomes</label>
           <textarea
             name="outcomes"
             placeholder="Capture key decisions, commitments, and business outcomes..."
             value={data.outcomes || ""}
             onChange={handleChange}
-            style={textarea}
+            className="min-h-[120px] w-full resize-y rounded-[16px] border border-slate-200 bg-white px-[16px] py-[16px] text-[14px] leading-7 text-slate-700 outline-none shadow-sm"
           />
         </div>
 
-        {/* FOLLOW UP */}
-
-        <div style={block}>
-          <label style={label}>
-            Follow-up Actions
-          </label>
-
+        <div className="mb-7">
+          <label className="mb-2.5 block text-[13px] font-bold text-slate-700">Follow-up Actions</label>
           <textarea
             name="followUp"
             placeholder="Next steps, tasks, reminders, or scheduling actions..."
             value={data.followUp || ""}
             onChange={handleChange}
-            style={textarea}
+            className="min-h-[120px] w-full resize-y rounded-[16px] border border-slate-200 bg-white px-[16px] py-[16px] text-[14px] leading-7 text-slate-700 outline-none shadow-sm"
           />
         </div>
 
-        {/* AI FOLLOW UPS */}
-
-        <div style={followupCard}>
-          <div style={labelRow}>
-            <label style={label}>
+        <div className="rounded-[22px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <label className="text-[13px] font-bold uppercase tracking-wide text-slate-700">
               AI Suggested Follow-ups
             </label>
 
-            <div style={aiBadge}>
-              Smart Suggestions
+            <div className="inline-flex items-center gap-[6px] rounded-full bg-indigo-50 px-[12px] py-[6px] text-[12px] font-semibold text-indigo-700">
+              <FiZap size={12} /> AI Suggestions
             </div>
           </div>
 
-          <div style={{ marginTop: 12 }}>
-            {data.suggestedFollowUps
-              ?.length > 0 ? (
-              data.suggestedFollowUps.map(
-                (
-                  item: string,
-                  i: number
-                ) => (
-                  <div
-                    key={i}
-                    style={followupItem}
-                  >
-                    <div
-                      style={
-                        followupDot
-                      }
-                    />
-
-                    {item}
-                  </div>
-                )
-              )
+          <div className="mt-3 space-y-3">
+            {data.suggestedFollowUps?.length > 0 ? (
+              data.suggestedFollowUps.map((item: string, i: number) => (
+                <div key={i} className="flex items-center gap-3 border-b border-slate-100 pb-3 text-[14px] text-slate-600 last:border-b-0 last:pb-0">
+                  <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-blue-600" />
+                  {item}
+                </div>
+              ))
             ) : (
-              <div style={emptyState}>
-                No AI suggestions available
-              </div>
+              <div className="text-[14px] italic text-slate-400">No AI suggestions available</div>
             )}
           </div>
         </div>
@@ -475,314 +320,3 @@ const InteractionForm = () => {
 };
 
 export default InteractionForm;
-
-/* ===================== STYLES ===================== */
-
-const container: CSSProperties = {
-  width: "62%",
-  minHeight: "100vh",
-  overflowY: "auto",
-  padding: "32px",
-  background:
-    "linear-gradient(to bottom,#f8fafc,#eef2ff)",
-  boxSizing: "border-box",
-  fontFamily:
-    "Inter, system-ui, sans-serif",
-};
-
-const topHeader: CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: "28px",
-};
-
-const pageTitle: CSSProperties = {
-  margin: 0,
-  fontSize: "30px",
-  fontWeight: 700,
-  color: "#111827",
-};
-
-const pageSubTitle: CSSProperties = {
-  marginTop: "8px",
-  color: "#6b7280",
-  fontSize: "14px",
-};
-
-const card: CSSProperties = {
-  background: "rgba(255,255,255,0.8)",
-  borderRadius: "24px",
-  padding: "32px",
-  border: "1px solid #e5e7eb",
-  backdropFilter: "blur(12px)",
-  boxShadow:
-    "0 20px 60px rgba(15,23,42,0.08)",
-};
-
-const sectionHeader: CSSProperties = {
-  marginBottom: "28px",
-};
-
-const sectionTitle: CSSProperties = {
-  margin: 0,
-  fontSize: "22px",
-  fontWeight: 700,
-  color: "#111827",
-};
-
-const sectionDesc: CSSProperties = {
-  marginTop: "8px",
-  color: "#6b7280",
-  fontSize: "14px",
-};
-
-const row: CSSProperties = {
-  display: "flex",
-  gap: "20px",
-  marginBottom: "24px",
-  flexWrap: "wrap",
-};
-
-const field: CSSProperties = {
-  flex: 1,
-  minWidth: "240px",
-};
-
-const block: CSSProperties = {
-  marginBottom: "28px",
-};
-
-const label: CSSProperties = {
-  display: "block",
-  marginBottom: "10px",
-  fontSize: "13px",
-  fontWeight: 700,
-  color: "#374151",
-};
-
-const labelRow: CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: "10px",
-};
-
-const inputWrapper: CSSProperties = {
-  position: "relative",
-};
-
-const leftIcon: CSSProperties = {
-  position: "absolute",
-  left: "14px",
-  top: "50%",
-  transform: "translateY(-50%)",
-  color: "#9ca3af",
-};
-
-const input: CSSProperties = {
-  width: "100%",
-  padding: "14px 16px 14px 42px",
-  borderRadius: "14px",
-  border: "1px solid #dbe3ee",
-  background: "#fff",
-  fontSize: "14px",
-  outline: "none",
-  boxSizing: "border-box",
-};
-
-const select: CSSProperties = {
-  width: "100%",
-  padding: "14px 16px",
-  borderRadius: "14px",
-  border: "1px solid #dbe3ee",
-  background: "#fff",
-  fontSize: "14px",
-  outline: "none",
-  cursor: "pointer",
-};
-
-const textarea: CSSProperties = {
-  width: "100%",
-  minHeight: "120px",
-  padding: "16px",
-  borderRadius: "16px",
-  border: "1px solid #dbe3ee",
-  background: "#fff",
-  fontSize: "14px",
-  resize: "vertical",
-  outline: "none",
-  boxSizing: "border-box",
-  lineHeight: 1.7,
-};
-
-const micIcon: CSSProperties = {
-  position: "absolute",
-  right: "18px",
-  bottom: "18px",
-  color: "#6b7280",
-  cursor: "pointer",
-};
-
-const aiBadge: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "6px",
-  padding: "6px 12px",
-  borderRadius: "999px",
-  background: "#eef2ff",
-  color: "#4338ca",
-  fontSize: "12px",
-  fontWeight: 600,
-};
-
-const voiceNote: CSSProperties = {
-  marginTop: "12px",
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "8px",
-  padding: "10px 14px",
-  borderRadius: "12px",
-  background: "#f8fafc",
-  color: "#374151",
-  fontSize: "13px",
-  fontWeight: 600,
-  cursor: "pointer",
-};
-
-const infoCard: CSSProperties = {
-  border: "1px solid #e5e7eb",
-  borderRadius: "18px",
-  padding: "20px",
-  marginBottom: "24px",
-  background: "#fff",
-};
-
-const infoCardHeader: CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: "14px",
-};
-
-const infoCardTitle: CSSProperties = {
-  margin: 0,
-  fontSize: "16px",
-  fontWeight: 700,
-  color: "#111827",
-};
-
-const infoCardSub: CSSProperties = {
-  marginTop: "4px",
-  color: "#6b7280",
-  fontSize: "13px",
-};
-
-const actionBtn: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  border: "none",
-  borderRadius: "12px",
-  padding: "10px 14px",
-  background:
-    "linear-gradient(135deg,#eff6ff,#eef2ff)",
-  color: "#2563eb",
-  fontWeight: 600,
-  cursor: "pointer",
-};
-
-const placeholderText: CSSProperties = {
-  color: "#9ca3af",
-  fontStyle: "italic",
-  fontSize: "14px",
-};
-
-const aiAnalysisBadge: CSSProperties = {
-  padding: "6px 10px",
-  borderRadius: "999px",
-  background: "#dcfce7",
-  color: "#166534",
-  fontSize: "12px",
-  fontWeight: 700,
-};
-
-const insightCard: CSSProperties = {
-  marginBottom: "18px",
-  padding: "18px",
-  borderRadius: "18px",
-  background:
-    "linear-gradient(135deg,#eff6ff,#f5f3ff)",
-  border: "1px solid #dbeafe",
-};
-
-const insightTitle: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  fontWeight: 700,
-  color: "#4338ca",
-  marginBottom: "10px",
-};
-
-const insightText: CSSProperties = {
-  margin: 0,
-  color: "#374151",
-  lineHeight: 1.7,
-  fontSize: "14px",
-};
-
-const sentimentGrid: CSSProperties = {
-  display: "flex",
-  gap: "16px",
-  flexWrap: "wrap",
-};
-
-const sentimentCard: CSSProperties = {
-  flex: 1,
-  minWidth: "140px",
-  padding: "18px",
-  borderRadius: "18px",
-  background: "#fff",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "10px",
-  cursor: "pointer",
-  transition: "0.2s",
-};
-
-const sentimentIcon: CSSProperties = {
-  fontSize: "24px",
-};
-
-const followupCard: CSSProperties = {
-  borderRadius: "22px",
-  padding: "24px",
-  background:
-    "linear-gradient(to bottom,#ffffff,#f8fafc)",
-  border: "1px solid #e5e7eb",
-};
-
-const followupItem: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "12px",
-  padding: "14px 0",
-  borderBottom: "1px solid #f1f5f9",
-  color: "#374151",
-  fontSize: "14px",
-};
-
-const followupDot: CSSProperties = {
-  width: "8px",
-  height: "8px",
-  borderRadius: "999px",
-  background: "#2563eb",
-};
-
-const emptyState: CSSProperties = {
-  color: "#9ca3af",
-  fontStyle: "italic",
-  fontSize: "14px",
-};

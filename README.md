@@ -1,23 +1,3 @@
-## Made By - Sayan Kundu
-
-**Full Stack Developer | Hands On Experince in EdTech & Fintech | Passionate about building real-world solutions**
-
----
-
-## 🔗 Links
-[![Resume](https://img.shields.io/badge/View_Resume-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://drive.google.com/file/d/1c0JPOQJcRBYOldQvooPfd4gQQ0kkJgbq/view?usp=drive_link)
-[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sayan-kundu-70b5442b6/)
-[![Github](https://img.shields.io/badge/github-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://github.com/sayank22)
-[![Portfolio](https://img.shields.io/badge/Portfolio-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://sayan-kundu-portfolio.netlify.app)
-
----
-
-# DocAI
-
-Live Demo: [https://doc-ai-sayan-kundu-eta.vercel.app](https://doc-ai-sayan-kundu-eta.vercel.app)
-
----
-
 # DocAI - AI-driven CRM assistant
 
 DocAI enables medical representatives to log and manage doctor interactions using natural language instead of manual form entry. Powered by LangGraph and LLM-based tools, it intelligently extracts structured data, updates records, and provides actionable insights like sentiment, outcomes, and follow-ups. This creates a faster, smarter, and more intuitive CRM experience.
@@ -147,3 +127,19 @@ npm run dev
 See it live: [https://doc-ai-sayan-kundu-eta.vercel.app](https://doc-ai-sayan-kundu-eta.vercel.app)
 
 ![Desktop Demo 1](client/src/assets/Screenshot.png)
+
+---
+
+## Made By - Sayan Kundu
+
+**Full Stack Developer | Hands On Experince in EdTech & Fintech | Passionate about building real-world solutions**
+
+---
+
+## 🔗 Links
+[![Resume](https://img.shields.io/badge/View_Resume-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://drive.google.com/file/d/1c0JPOQJcRBYOldQvooPfd4gQQ0kkJgbq/view?usp=drive_link)
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sayan-kundu-70b5442b6/)
+[![Github](https://img.shields.io/badge/github-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://github.com/sayank22)
+[![Portfolio](https://img.shields.io/badge/Portfolio-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://sayan-kundu-portfolio.netlify.app)
+
+---

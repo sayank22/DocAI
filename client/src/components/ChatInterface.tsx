@@ -4,6 +4,7 @@ import { setAllFields, updateFields } from "../redux/interactionSlice";
 import type { RootState } from "../redux/store";
 import { extractInteraction } from "../services/api";
 import { supabase } from "../services/supabase";
+import { MdSmartToy } from "react-icons/md";
 
 type Message = {
   type: "user" | "bot";
@@ -134,98 +135,32 @@ const ChatInterface = () => {
   };
 
   return (
-    <div
-      style={{
-        width: "38%",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        background:
-          "linear-gradient(to bottom, #f8fafc, #eef2ff)",
-        borderLeft: "1px solid #e5e7eb",
-      }}
-    >
+    <div className="flex h-screen w-[38%] flex-col border-l border-slate-200 bg-gradient-to-b from-slate-50 to-slate-100">
       {/* HEADER */}
-      <div
-        style={{
-          padding: "20px",
-          borderBottom: "1px solid #e5e7eb",
-          background: "rgba(255,255,255,0.7)",
-          backdropFilter: "blur(12px)",
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
-        }}
-      >
+      <div className="sticky top-0 z-20 border-b border-slate-200 bg-white/70 p-5 backdrop-blur-xl">
         <div>
-  <h2
-    style={{
-      margin: 0,
-      fontSize: "18px",
-      color: "#111827",
-    }}
-  >
-    DocAI Assistant
+          <div className="flex items-center gap-2">
+  <MdSmartToy size={24} className="text-indigo-600" />
+  <h2 className="m-0 text-lg font-semibold text-slate-900">
+    AI Assistant
   </h2>
-
-  <p
-    style={{
-      margin: "4px 0 0",
-      fontSize: "13px",
-      color: "#6b7280",
-    }}
-  >
-    AI-powered interaction logging
-  </p>
 </div>
+          <p className="mt-1 text-xs text-slate-500">
+            Log Interaction via chat
+          </p>
+        </div>
       </div>
 
       {/* CHAT AREA */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "24px 18px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "14px",
-        }}
-      >
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-6">
         {messages.length === 0 && (
-          <div
-            style={{
-              marginTop: "40px",
-              textAlign: "center",
-              color: "#6b7280",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "52px",
-                marginBottom: "12px",
-              }}
-            >
-              🩺
-            </div>
-
-            <h3
-              style={{
-                marginBottom: "8px",
-                color: "#111827",
-              }}
-            >
+          <div className="mt-10 text-center text-slate-500">
+            <div className="mb-3 text-5xl">🩺</div>
+            <h3 className="mb-2 text-xl font-semibold text-slate-900">
               Start Logging Interactions
             </h3>
-
-            <p
-              style={{
-                fontSize: "14px",
-                lineHeight: 1.6,
-              }}
-            >
-              Describe doctor meetings naturally and
-              DocAI will structure the interaction
-              automatically.
+            <p className="text-sm leading-6">
+              Describe doctor meetings naturally and DocAI will structure the interaction automatically.
             </p>
           </div>
         )}
@@ -233,43 +168,18 @@ const ChatInterface = () => {
         {messages.map((msg, index) => (
           <div
             key={index}
-            style={{
-              display: "flex",
-              justifyContent:
-                msg.type === "user"
-                  ? "flex-end"
-                  : "flex-start",
-            }}
+            className={
+              msg.type === "user"
+                ? "flex justify-end"
+                : "flex justify-start"
+            }
           >
             <div
-              style={{
-                maxWidth: "82%",
-                padding: "14px 16px",
-                borderRadius: "18px",
-                fontSize: "14px",
-                lineHeight: 1.6,
-                whiteSpace: "pre-wrap",
-
-                background:
-                  msg.type === "user"
-                    ? "linear-gradient(135deg,#2563eb,#4f46e5)"
-                    : "#ffffff",
-
-                color:
-                  msg.type === "user"
-                    ? "#ffffff"
-                    : "#111827",
-
-                boxShadow:
-                  msg.type === "user"
-                    ? "0 10px 25px rgba(37,99,235,0.25)"
-                    : "0 4px 18px rgba(0,0,0,0.06)",
-
-                border:
-                  msg.type === "bot"
-                    ? "1px solid #e5e7eb"
-                    : "none",
-              }}
+              className={`max-w-[82%] whitespace-pre-wrap rounded-[18px] px-4 py-3 text-sm leading-6 ${
+                msg.type === "user"
+                  ? "bg-gradient-to-br from-sky-600 to-indigo-600 text-white shadow-[0_10px_25px_rgba(37,99,235,0.25)]"
+                  : "bg-white text-slate-900 border border-slate-200 shadow-[0_4px_18px_rgba(0,0,0,0.06)]"
+              }`}
             >
               {msg.text}
             </div>
@@ -277,24 +187,8 @@ const ChatInterface = () => {
         ))}
 
         {isLoading && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-            }}
-          >
-            <div
-              style={{
-                background: "#fff",
-                border: "1px solid #e5e7eb",
-                borderRadius: "18px",
-                padding: "14px 18px",
-                boxShadow:
-                  "0 4px 18px rgba(0,0,0,0.06)",
-                color: "#6b7280",
-                fontSize: "14px",
-              }}
-            >
+          <div className="flex justify-start">
+            <div className="rounded-[18px] border border-slate-200 bg-white px-5 py-4 text-sm text-slate-500 shadow-[0_4px_18px_rgba(0,0,0,0.06)]">
               Analyzing interaction...
             </div>
           </div>
@@ -304,59 +198,25 @@ const ChatInterface = () => {
       </div>
 
       {/* INPUT AREA */}
-      <div
-        style={{
-          padding: "18px",
-          borderTop: "1px solid #e5e7eb",
-          background: "rgba(255,255,255,0.85)",
-          backdropFilter: "blur(12px)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            gap: "12px",
-            marginBottom: "12px",
-          }}
-        >
+      <div className="border-t border-slate-200 bg-white/90 p-5 backdrop-blur-xl">
+        <div className="mb-3 flex gap-3">
           <input
             value={input}
             disabled={isLoading}
             placeholder="Describe doctor interaction..."
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) =>
-              e.key === "Enter" && handleSend()
-            }
-            style={{
-              flex: 1,
-              border: "1px solid #d1d5db",
-              borderRadius: "14px",
-              padding: "14px 16px",
-              fontSize: "14px",
-              outline: "none",
-              background: "#fff",
-            }}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            className="flex-1 rounded-[14px] border border-slate-300 bg-white px-4 py-4 text-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 disabled:cursor-not-allowed disabled:bg-slate-100"
           />
 
           <button
             onClick={handleSend}
             disabled={isLoading}
-            style={{
-              border: "none",
-              borderRadius: "14px",
-              padding: "0 22px",
-              background: isLoading
-                ? "#9ca3af"
-                : "linear-gradient(135deg,#2563eb,#4f46e5)",
-              color: "#fff",
-              fontWeight: 600,
-              cursor: isLoading
-                ? "not-allowed"
-                : "pointer",
-              transition: "0.2s ease",
-              boxShadow:
-                "0 10px 25px rgba(37,99,235,0.25)",
-            }}
+            className={`rounded-[14px] px-6 text-sm font-semibold text-white transition disabled:cursor-not-allowed ${
+              isLoading
+                ? "bg-slate-400"
+                : "bg-gradient-to-br from-sky-600 to-indigo-600 shadow-[0_10px_25px_rgba(37,99,235,0.25)]"
+            }`}
           >
             {isLoading ? "..." : "Send"}
           </button>
@@ -365,27 +225,13 @@ const ChatInterface = () => {
         <button
           onClick={handleSaveToDB}
           disabled={isSaving}
-          style={{
-            width: "100%",
-            border: "none",
-            borderRadius: "14px",
-            padding: "14px",
-            background: isSaving
-              ? "#9ca3af"
-              : "linear-gradient(135deg,#059669,#10b981)",
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: "14px",
-            cursor: isSaving
-              ? "not-allowed"
-              : "pointer",
-            boxShadow:
-              "0 10px 25px rgba(16,185,129,0.25)",
-          }}
+          className={`w-full rounded-[14px] px-4 py-4 text-sm font-semibold text-white transition disabled:cursor-not-allowed ${
+            isSaving
+              ? "bg-slate-400"
+              : "bg-gradient-to-br from-emerald-600 to-emerald-500 shadow-[0_10px_25px_rgba(16,185,129,0.25)]"
+          }`}
         >
-          {isSaving
-            ? "Saving..."
-            : "Save Interaction"}
+          {isSaving ? "Saving..." : "Save Interaction"}
         </button>
       </div>
     </div>
