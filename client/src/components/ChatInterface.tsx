@@ -5,6 +5,7 @@ import type { RootState } from "../redux/store";
 import { extractInteraction } from "../services/api";
 import { supabase } from "../services/supabase";
 import { MdSmartToy } from "react-icons/md";
+import { toast } from 'sonner';
 
 type Message = {
   type: "user" | "bot";
@@ -123,9 +124,9 @@ const ChatInterface = () => {
 
       if (error) {
         console.error(error.message);
-        alert("Failed to save: " + error.message);
+        toast.error("Failed to save: " + error.message);
       } else {
-        alert("Interaction saved successfully!");
+        toast.success("Interaction saved successfully!");
       }
     } catch (err) {
       console.error(err);
