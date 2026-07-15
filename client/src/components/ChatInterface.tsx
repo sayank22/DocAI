@@ -135,7 +135,7 @@ const ChatInterface = () => {
   };
 
   return (
-    <div className="flex h-screen w-[38%] flex-col border-l border-slate-200 bg-gradient-to-b from-slate-50 to-slate-100">
+    <div className="flex h-screen w-[38%] flex-col border-l border-slate-200 bg-linear-to-b from-slate-50 to-slate-100">
       {/* HEADER */}
       <div className="sticky top-0 z-20 border-b border-slate-200 bg-white/70 p-5 backdrop-blur-xl">
         <div>
@@ -177,7 +177,7 @@ const ChatInterface = () => {
             <div
               className={`max-w-[82%] whitespace-pre-wrap rounded-[18px] px-4 py-3 text-sm leading-6 ${
                 msg.type === "user"
-                  ? "bg-gradient-to-br from-sky-600 to-indigo-600 text-white shadow-[0_10px_25px_rgba(37,99,235,0.25)]"
+                  ? "bg-linear-to-br from-sky-600 to-indigo-600 text-white shadow-[0_10px_25px_rgba(37,99,235,0.25)]"
                   : "bg-white text-slate-900 border border-slate-200 shadow-[0_4px_18px_rgba(0,0,0,0.06)]"
               }`}
             >
@@ -215,7 +215,7 @@ const ChatInterface = () => {
             className={`rounded-[14px] px-6 text-sm font-semibold text-white transition disabled:cursor-not-allowed ${
               isLoading
                 ? "bg-slate-400"
-                : "bg-gradient-to-br from-sky-600 to-indigo-600 shadow-[0_10px_25px_rgba(37,99,235,0.25)]"
+                : "bg-linear-to-br from-sky-600 to-indigo-600 shadow-[0_10px_25px_rgba(37,99,235,0.25)]"
             }`}
           >
             {isLoading ? "..." : "Send"}
@@ -228,7 +228,7 @@ const ChatInterface = () => {
           className={`w-full rounded-[14px] px-4 py-4 text-sm font-semibold text-white transition disabled:cursor-not-allowed ${
             isSaving
               ? "bg-slate-400"
-              : "bg-gradient-to-br from-emerald-600 to-emerald-500 shadow-[0_10px_25px_rgba(16,185,129,0.25)]"
+              : "bg-linear-to-br from-emerald-600 to-emerald-500 shadow-[0_10px_25px_rgba(16,185,129,0.25)]"
           }`}
         >
           {isSaving ? "Saving..." : "Save Interaction"}
